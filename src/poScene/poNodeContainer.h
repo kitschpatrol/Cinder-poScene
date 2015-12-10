@@ -36,7 +36,7 @@ namespace po { namespace scene {
     // NodeContainers are groups of Nodes. They do not render anything themselves,
     // but they should render all of their children, allow for grouped alpha,
     // and be hit testable. Hit testing on a Node Container is true if any of it's
-    // children return true to a pointInside query.
+    // children return  true to a pointInside query.
     //
     // Node containers can also be use to generate a texture from a complex layout,
     // hide/show collections of objects, enable/disable interaction on a group level,

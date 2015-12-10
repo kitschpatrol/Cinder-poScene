@@ -106,9 +106,9 @@ namespace po { namespace scene {
         return s;
     }
     
-    ShapeRef Shape::createCircle(float size)
+    ShapeRef Shape::createCircle(float diameter)
     {
-        return createEllipse(size, size);
+        return createEllipse(diameter, diameter);
     }
 	
     Shape::Shape()
