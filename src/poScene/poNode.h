@@ -26,7 +26,7 @@
  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 
 #pragma once
 
@@ -90,7 +90,7 @@ public:
 
 	//! Setup function, used to initialize node
 	/**	Use this to do non-initializing construction of your object, add children, add events, etc.
-			Since we're using shared_ptr's the constructor is a bit worthless, we can't call shared_from_this() or get a shared pointer to "this". **/
+	 Since we're using shared_ptr's the constructor is a bit worthless, we can't call shared_from_this() or get a shared pointer to "this". **/
 	virtual void setup(){};
 
 	//! Called automatically once per scene update for every node in the scene
@@ -98,7 +98,7 @@ public:
 	virtual void update(){};
 	//! Called automatically once per scene draw, do any OpenGL here
 	/** All matrix transformations take place before this call, so you are automatically in local space
-			when this function begins **/
+	 when this function begins **/
 	virtual void draw() = 0;
 
 	//------------------------------------
@@ -144,15 +144,11 @@ public:
 	//! Get the width with scaling applied
 	float getScaledWidth() {
 		return getWidth() * getScale().x;
-	}
+	};
 	//! Get the height with scaling applied
 	float getScaledHeight() {
 		return getHeight() * getScale().y;
-	}
-
-	ci::vec2 getCenter() {
-		return ci::vec2(getWidth() * 0.5, getHeight() * 0.5);
-	}
+	};
 
 	//	Bounds & Frame
 	//  The bounds of the node are relative to local space around the top left origin.
@@ -352,6 +348,19 @@ public:
 	//! Get the matrix order
 	MatrixOrder getMatrixOrder() {
 		return mMatrixOrder;
+	}
+
+	// Whole pixel snapping
+	// Snap coordinates (position + offset) to whole pixels
+	// This does not affect parent node
+
+	//! Set the matrix order
+	Node &setPixelSnapping(bool pixelSnapping) {
+		mPixelSnapping = pixelSnapping;
+		return *this;
+	};
+	bool getPixelSnapping() {
+		return mPixelSnapping;
 	}
 
 	// Fill
@@ -571,6 +580,8 @@ private:
 	bool mFillEnabled, mStrokeEnabled;
 	float mAlpha, mAppliedAlpha;
 	MatrixOrder mMatrixOrder;
+
+	bool mPixelSnapping;
 
 	// Animation
 	//! Initialize our attribute animations
