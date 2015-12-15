@@ -95,6 +95,8 @@ NodeContainer &NodeContainer::addChildren(std::vector<NodeRef> nodes) {
 	return *this;
 }
 
+	
+	
 NodeContainer &NodeContainer::addChildAt(int index, NodeRef node) {
 	setParentAndScene(node);
 	mChildren.insert(mChildren.begin() + index, node);
@@ -125,6 +127,24 @@ NodeContainer &NodeContainer::addChildAfter(NodeRef after, NodeRef node) {
 //
 //  Get Children
 //
+
+std::deque<NodeRef> NodeContainer::getChildrenRecursive() {
+	std::deque<NodeRef> recursiveChildren;
+	return getChildrenRecursive(recursiveChildren);
+}
+
+std::deque<NodeRef> NodeContainer::getChildrenRecursive(std::deque<NodeRef> &recursiveChildren) {
+	for (NodeRef &node : mChildren) {
+		NodeContainerRef container = std::dynamic_pointer_cast<NodeContainer>(node);
+		if (container) {
+			recursiveChildren.push_back(container);
+			container->getChildrenRecursive(recursiveChildren);
+		} else {
+			recursiveChildren.push_back(node);
+		}
+	}
+	return recursiveChildren;
+};
 
 std::deque<NodeRef> NodeContainer::getChildren() {
 	return mChildren;

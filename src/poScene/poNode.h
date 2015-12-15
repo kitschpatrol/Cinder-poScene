@@ -150,6 +150,10 @@ public:
 		return getHeight() * getScale().y;
 	};
 
+	ci::vec2 getCenter() {
+		return ci::vec2(getWidth() * 0.5, getHeight() * 0.5);
+	}
+
 	//	Bounds & Frame
 	//  The bounds of the node are relative to local space around the top left origin.
 	//  The frame is relative to the position of the node
@@ -157,10 +161,13 @@ public:
 	//! Draw a frame around the bounds, useful for debugging
 	Node &setDrawBounds(bool enabled) {
 		mDrawBounds = enabled;
+
 		return *this;
 	};
+
 	//! Return the bounds
 	virtual ci::Rectf getBounds();
+
 	//! Set the color that the bounds should be drawn in
 	Node &setBoundsColor(ci::Color color) {
 		mBoundsColor = color;

@@ -84,6 +84,10 @@ public:
 	int getNumChildren() {
 		return mChildren.size();
 	};
+
+	//! Get all this NodeContainer's children and its children's children
+	std::deque<NodeRef> getChildrenRecursive();
+
 	//! Get all this NodeContainer's children
 	std::deque<NodeRef> getChildren();
 	//! Get a reference to all of this NodeContainer's children
@@ -150,6 +154,9 @@ protected:
 	void removeScene();
 
 private:
+	// helper to get recursive children
+	std::deque<NodeRef> getChildrenRecursive(std::deque<NodeRef> &recursiveChildren);
+
 	//  Set the parent to this container and the scene to this container's scene
 	void setParentAndScene(NodeRef node);
 

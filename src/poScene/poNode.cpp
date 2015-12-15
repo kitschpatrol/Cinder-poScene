@@ -169,7 +169,6 @@ void Node::matrixTree() {
 void Node::captureMasked() {
 	//	Save the window buffer
 	{
-
 		//  Draw ourself into FBO
 		ci::gl::ScopedFramebuffer buffer(getScene()->getWindowFbo());
 		ci::gl::clear(ci::ColorA(1.0f, 1.0f, 1.0f, 0.0f));
