@@ -275,6 +275,10 @@ public:
 	// Scale
 	// Scales around the origin of the node
 
+	Node &setScale(float s) {
+		return setScale(s, s);
+	}
+
 	//! Set the scale with a ci::vec2
 	Node &setScale(ci::vec2 scale) {
 		return setScale(scale.x, scale.y);

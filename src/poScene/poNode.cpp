@@ -82,13 +82,45 @@ static const char *maskFragShader = CI_GLSL(150, in highp vec2 TexCoord;
 																						});
 
 Node::Node(std::string name)
-		: mUid(OBJECT_UID++), mName(name), mDrawOrder(0), mPosition(0.f, 0.f), mScale(1.f, 1.f), mRotation(0), mOffset(0.f, 0.f), mAlpha(1.f), mAppliedAlpha(1.f),
-			mPositionAnim(ci::vec2(0.f, 0.f)), mScaleAnim(ci::vec2(1.f, 1.f)), mRotationAnim(0), mOffsetAnim(ci::vec2(0.f, 0.f)), mAlphaAnim(1.f),
-			mAlignment(Alignment::TOP_LEFT), mMatrixOrder(MatrixOrder::TRS), mFillColor(1.f, 1.f, 1.f), mFillColorAnim(ci::Color(1.f, 1.f, 1.f)), mFillEnabled(true),
-			mStrokeColor(255, 255, 255), mStrokeEnabled(false), mPixelSnapping(false), mUpdatePositionFromAnim(false), mUpdateScaleFromAnim(false),
-			mUpdateRotationFromAnim(false), mUpdateOffsetFromAnim(false), mUpdateAlphaFromAnim(false), mUpdateFillColorFromAnim(false), mDrawBounds(false),
-			mBoundsColor(1.f, 0, 0), mParentShouldIgnoreInBounds(false), mBoundsDirty(true), mFrameDirty(true), mVisible(true), mInteractionEnabled(true),
-			mHasScene(false), mHasParent(false), mIsMasked(false), mMask(nullptr) {
+		: mUid(OBJECT_UID++)
+		, mName(name)
+		, mDrawOrder(0)
+		, mPosition(0.f, 0.f)
+		, mScale(1.f, 1.f)
+		, mRotation(0)
+		, mOffset(0.f, 0.f)
+		, mAlpha(1.f)
+		, mAppliedAlpha(1.f)
+		, mPositionAnim(ci::vec2(0.f, 0.f))
+		, mScaleAnim(ci::vec2(1.f, 1.f))
+		, mRotationAnim(0)
+		, mOffsetAnim(ci::vec2(0.f, 0.f))
+		, mAlphaAnim(1.f)
+		, mAlignment(Alignment::TOP_LEFT)
+		, mMatrixOrder(MatrixOrder::TRS)
+		, mFillColor(1.f, 1.f, 1.f)
+		, mFillColorAnim(ci::Color(1.f, 1.f, 1.f))
+		, mFillEnabled(true)
+		, mStrokeColor(255, 255, 255)
+		, mStrokeEnabled(false)
+		, mPixelSnapping(false)
+		, mUpdatePositionFromAnim(false)
+		, mUpdateScaleFromAnim(false)
+		, mUpdateRotationFromAnim(false)
+		, mUpdateOffsetFromAnim(false)
+		, mUpdateAlphaFromAnim(false)
+		, mUpdateFillColorFromAnim(false)
+		, mDrawBounds(false)
+		, mBoundsColor(1.f, 0, 0)
+		, mParentShouldIgnoreInBounds(false)
+		, mBoundsDirty(true)
+		, mFrameDirty(true)
+		, mVisible(true)
+		, mInteractionEnabled(true)
+		, mHasScene(false)
+		, mHasParent(false)
+		, mIsMasked(false)
+		, mMask(nullptr) {
 	//	Initialize our animations
 	initAttrAnimations();
 }
@@ -645,6 +677,11 @@ ci::Rectf Node::getFrame() {
 	return mFrame;
 }
 
+
+	
+
+
+	
 //------------------------------------
 //  Events
 //------------------------------------

@@ -98,6 +98,8 @@ public:
 	//! Get the root Node
 	void setRootNode(NodeContainerRef node);
 
+	NodeRef getNodeUnderPoint(ci::vec2 point);
+
 protected:
 	Scene(NodeContainerRef rootNode);
 
