@@ -441,7 +441,7 @@ public:
 	// as a texture.
 
 	//! Create an FBO, draw this node (and it's entire hierarchy if applicable) into it, and return the texture
-	ci::gl::TextureRef createTexture();
+	ci::gl::TextureRef createTexture(bool drawMaskedEnabled = false);
 
 	// Masking
 	// Nodes can be masked to another node
@@ -558,7 +558,7 @@ protected:
 
 	//	Caching/FBO
 	void captureMasked();
-	void drawMasked();
+	void drawMasked(bool useWindowMatrix = true);
 	po::scene::NodeRef mMask;
 	bool mIsMasked;
 

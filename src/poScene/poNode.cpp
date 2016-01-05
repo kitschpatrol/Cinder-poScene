@@ -218,11 +218,14 @@ void Node::captureMasked() {
 	}
 }
 
-void Node::drawMasked() {
+void Node::drawMasked(bool useWindowMatrix) {
 	ci::gl::enableAlphaBlending();
 
 	ci::gl::pushModelView();
-	ci::gl::setMatricesWindow(ci::app::getWindowSize());
+
+	if (useWindowMatrix) {
+		ci::gl::setMatricesWindow(ci::app::getWindowSize());
+	}
 
 	// Bind FBO textures
 	ci::gl::ScopedTextureBind fboBind(getScene()->getWindowFbo()->getColorTexture(), 0);
@@ -279,7 +282,7 @@ NodeRef Node::removeMask() {
 //	Texture Caching
 //------------------------------------
 
-ci::gl::TextureRef Node::createTexture() {
+ci::gl::TextureRef Node::createTexture(bool drawMaskedEnabled) {
 	//	We have to be visible, so if we aren't temporarily turn it on
 	bool visible = mVisible;
 	setVisible(true);
@@ -290,6 +293,7 @@ ci::gl::TextureRef Node::createTexture() {
 	format.enableDepthBuffer(false);
 
 	//	Create and Bind the FBO
+
 	ci::gl::FboRef fbo = ci::gl::Fbo::create(getWidth(), getHeight(), format);
 	ci::gl::ScopedFramebuffer fboBind(fbo);
 
@@ -298,13 +302,18 @@ ci::gl::TextureRef Node::createTexture() {
 
 	//	Set Ortho camera to fbo bounds, save matrices and push camera
 	ci::gl::pushMatrices();
+
 	ci::gl::setMatricesWindow(fbo->getWidth(), fbo->getHeight());
 
 	//	Clear the FBO
 	ci::gl::clear(ci::ColorA(1.f, 1.f, 1.f, 0.f));
 
 	//	Draw into the FBO
-	draw();
+	if (drawMaskedEnabled) {
+		drawMasked(false);
+	} else {
+		draw();
+	}
 
 	//	Set the camera up for the window
 	ci::gl::popMatrices();
@@ -677,11 +686,6 @@ ci::Rectf Node::getFrame() {
 	return mFrame;
 }
 
-
-	
-
-
-	
 //------------------------------------
 //  Events
 //------------------------------------
