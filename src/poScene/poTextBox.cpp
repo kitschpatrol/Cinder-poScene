@@ -47,7 +47,10 @@ TextBoxRef TextBox::create(ci::TextBox ciTextBox, ci::gl::Texture::Format format
 	return ref;
 }
 
-TextBox::TextBox(ci::TextBox ciTextBox) : mCiTextBox(ciTextBox), mUseTextBounds(false), mHasFormat(false) {
+TextBox::TextBox(ci::TextBox ciTextBox)
+		: mCiTextBox(ciTextBox)
+		, mUseTextBounds(false)
+		, mHasFormat(false) {
 	render();
 }
 
@@ -55,7 +58,7 @@ void TextBox::draw() {
 	if (mTexture) {
 		ci::gl::enableAlphaBlending();
 
-		ci::gl::color(1, 1, 1, getAppliedAlpha());
+		ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
 		ci::gl::draw(mTexture);
 	}
 }
