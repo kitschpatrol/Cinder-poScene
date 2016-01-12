@@ -42,7 +42,8 @@ ImageRef Image::create(ci::gl::TextureRef texture) {
 	return ref;
 }
 
-Image::Image(ci::gl::TextureRef texture) : mTexture(texture) {
+Image::Image(ci::gl::TextureRef texture)
+		: mTexture(texture) {
 }
 
 void Image::draw() {
@@ -54,7 +55,11 @@ void Image::draw() {
 }
 
 ci::Rectf Image::getBounds() {
-	return mTexture->getBounds();
+	if (mTexture) {
+		return mTexture->getBounds();
+	} else {
+		return ci::Rectf::zero();
+	}
 }
 }
 } //  Namespace: po::scene
