@@ -598,7 +598,7 @@ ci::vec2 Node::localToWindow(const ci::vec2 &scenePoint) {
 //
 bool Node::pointInside(const ci::vec2 &point) {
 	ci::vec2 pos = windowToLocal(point);
-	return getBounds().contains(pos);
+	return getBounds().contains(pos) && !std::isnan(pos.x);
 }
 
 //------------------------------------
