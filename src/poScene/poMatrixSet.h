@@ -52,10 +52,10 @@ public:
 
 private:
 	glm::mat4x4 mModelview, mProjection;
-	ci::Area mViewport;
+	glm::vec4 mViewport;
 
 	ci::vec3 project(const ci::vec3 &point);
-	ci::vec3 unproject(const ci::vec3 &point);
+	ci::vec3 unProject(const ci::vec3 &point);
 };
 }
 } //  namespace po::scene
