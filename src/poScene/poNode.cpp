@@ -417,8 +417,10 @@ bool Node::isVisible() {
 
 	NodeRef parent = getParent();
 	while (parent) {
-		if (!parent->mVisible)
+		if (!parent->mVisible) {
 			return false;
+		}
+		
 		parent = parent->getParent();
 	}
 
@@ -598,7 +600,7 @@ ci::vec2 Node::localToWindow(const ci::vec2 &scenePoint) {
 //
 bool Node::pointInside(const ci::vec2 &point) {
 	ci::vec2 pos = windowToLocal(point);
-	return getBounds().contains(pos) && !std::isnan(pos.x);
+	return getBounds().contains(pos);
 }
 
 //------------------------------------
@@ -695,8 +697,13 @@ ci::Rectf Node::getFrame() {
 //
 
 bool Node::isEligibleForInteractionEvents() {
-	if (!hasScene() || !isInteractionEnabled() || !isVisible())
-		return false;
+  if (!hasScene() ||
+      !isInteractionEnabled() ||
+			!isVisible() ||
+			mScale.x == 0.0f ||
+			mScale.y == 0.0f) {
+        return false;
+			}
 	return true;
 }
 
