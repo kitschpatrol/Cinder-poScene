@@ -40,6 +40,10 @@
 #include "poEvents.h"
 #include "poMatrixSet.h"
 
+#ifdef CINDER_MSW
+#include <deque>
+#endif
+
 namespace po {
 namespace scene {
 
