@@ -33,6 +33,7 @@
 #include "cinder/Camera.h"
 #include "poEventCenter.h"
 #include "poNodeContainer.h"
+#include <deque>
 
 namespace po {
 namespace scene {
