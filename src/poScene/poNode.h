@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "boost/signals2.hpp"
+#include "cinder/Signals.h"
 #include "cinder/Cinder.h"
 #include "cinder/CinderMath.h"
 #include "cinder/Exception.h"
@@ -39,6 +39,7 @@
 #include "cinder/gl/GlslProg.h"
 #include "poEvents.h"
 #include "poMatrixSet.h"
+#include <deque>
 
 namespace po {
 namespace scene {
