@@ -44,6 +44,7 @@
 
 #include "Resources.h"
 #include "cinder/CinderMath.h"
+#include "cinder/Utilities.h"
 #include "poNode.h"
 #include "poNodeContainer.h"
 #include "poScene.h"
@@ -83,7 +84,7 @@ static const char *maskFragShader = CI_GLSL(150, in highp vec2 TexCoord;
 
 Node::Node(std::string name)
 		: mUid(OBJECT_UID++)
-		, mName(name)
+		, mName("Node " + ci::toString(OBJECT_UID)) // Default to something semi-sensible
 		, mDrawOrder(0)
 		, mPosition(0.f, 0.f)
 		, mScale(1.f, 1.f)
