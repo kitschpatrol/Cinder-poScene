@@ -237,6 +237,7 @@ void Node::drawMasked(bool useWindowMatrix) {
 	mMaskShader->uniform("mask", 1);
 
 	// Bind shader
+	// See https://github.com/cinder/Cinder/issues/836
 	ci::gl::ScopedGlslProg shaderScp(mMaskShader);
 
 	//	Draw
