@@ -391,13 +391,29 @@ Node &Node::setFillColor(ci::Color color) {
 	return *this;
 }
 
+Node &Node::setOffsetNormalized(ci::vec2 offset) {
+	return setOffsetNormalized(offset.x, offset.y);
+}
+
+Node &Node::setOffsetNormalized(float x, float y) {
+	return setOffset(x * getWidth(), y * getHeight());
+}
+
+ci::vec2 Node::getOffsetNormalized() {
+	if (getWidth() == 0 || getHeight() == 0) {
+		return ci::vec2(0);
+	} else {
+		return ci::vec2(mOffset.x / getWidth(), mOffset.y / getHeight());
+	}
+}
+
 //
 //	Offset the whole node from the origin
 //
 Node &Node::setOffset(float x, float y) {
 	mOffsetAnim.stop();
 	mUpdateOffsetFromAnim = false;
-	mOffset - ci::vec2(x, y);
+	mOffset = ci::vec2(x, y);
 	mOffsetAnim = mOffset;
 	mFrameDirty = true;
 
@@ -420,7 +436,7 @@ bool Node::isVisible() {
 		if (!parent->mVisible) {
 			return false;
 		}
-		
+
 		parent = parent->getParent();
 	}
 
@@ -697,13 +713,9 @@ ci::Rectf Node::getFrame() {
 //
 
 bool Node::isEligibleForInteractionEvents() {
-  if (!hasScene() ||
-      !isInteractionEnabled() ||
-			!isVisible() ||
-			mScale.x == 0.0f ||
-			mScale.y == 0.0f) {
-        return false;
-			}
+	if (!hasScene() || !isInteractionEnabled() || !isVisible() || mScale.x == 0.0f || mScale.y == 0.0f) {
+		return false;
+	}
 	return true;
 }
 

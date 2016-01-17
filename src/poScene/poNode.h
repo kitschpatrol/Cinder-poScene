@@ -287,6 +287,7 @@ public:
 	//! Set the scale, convenience method
 	Node &setScale(float x, float y);
 	//! Get the scale
+
 	ci::vec2 getScale() {
 		return mScale;
 	};
@@ -295,9 +296,9 @@ public:
 	// Rotates around the origin of the node
 	// Expressed in degrees
 
-	//! Set the rotation (in degrees)
+	//! Set the rotation (in radians)
 	Node &setRotation(float rotation);
-	//! Get the rotation (in degrees)
+	//! Get the rotation (in radians)
 	float getRotation() {
 		return mRotation;
 	};
@@ -327,6 +328,10 @@ public:
 	// The offset of drawing, relative to the origin.
 	// This can be set either by using one of the built in alignments,
 	// or manually by using one of the below methods
+
+	Node &setOffsetNormalized(ci::vec2 offset);
+	Node &setOffsetNormalized(float x, float y);
+	ci::vec2 getOffsetNormalized();
 
 	//! Set the offset using a ci::vec2
 	Node &setOffset(ci::vec2 offset) {
