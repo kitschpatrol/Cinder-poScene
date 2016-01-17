@@ -232,12 +232,12 @@ void Node::drawMasked(bool useWindowMatrix) {
 	ci::gl::ScopedTextureBind fboBind(getScene()->getWindowFbo()->getColorTexture(), 0);
 	ci::gl::ScopedTextureBind maskBind(getScene()->getMaskFbo()->getColorTexture(), 1);
 
-	//	Bind Shader
-	mMaskShader->bind();
-
 	//	Set uniforms
 	mMaskShader->uniform("tex", 0);
 	mMaskShader->uniform("mask", 1);
+
+	// Bind shader
+	ci::gl::ScopedGlslProg shaderScp(mMaskShader);
 
 	//	Draw
 	ci::gl::drawSolidRect(getScene()->getWindowFbo()->getBounds());
