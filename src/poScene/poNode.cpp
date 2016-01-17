@@ -54,7 +54,7 @@ namespace po {
 namespace scene {
 
 static uint32_t OBJECT_UID = 0;
-static const int ORIGIN_SIZE = 2;
+static const int ORIGIN_SIZE = 8;
 
 // Masking Shader
 static ci::gl::GlslProgRef mMaskShader = nullptr;
@@ -84,7 +84,7 @@ static const char *maskFragShader = CI_GLSL(150, in highp vec2 TexCoord;
 
 Node::Node(std::string name)
 		: mUid(OBJECT_UID++)
-		, mName("Node " + ci::toString(OBJECT_UID)) // Default to something semi-sensible
+		, mName("Node " + ci::toString(OBJECT_UID) + " @ " + ci::toString(this)) // Default to something semi-sensible
 		, mDrawOrder(0)
 		, mPosition(0.f, 0.f)
 		, mScale(1.f, 1.f)
@@ -166,7 +166,6 @@ void Node::beginDrawTree() {
 
 void Node::drawTree() {
 	if (mVisible) {
-
 		//  Draw
 		beginDrawTree();
 
@@ -183,8 +182,9 @@ void Node::drawTree() {
 
 void Node::finishDrawTree() {
 	//	Draw bounds if necessary
-	if (mDrawBounds)
+	if (mDrawBounds) {
 		drawBounds();
+	}
 
 	//	Pop our Matrix
 	ci::gl::popModelView();

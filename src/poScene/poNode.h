@@ -162,7 +162,6 @@ public:
 	//! Draw a frame around the bounds, useful for debugging
 	Node &setDrawBounds(bool enabled) {
 		mDrawBounds = enabled;
-
 		return *this;
 	};
 
@@ -262,6 +261,23 @@ public:
 
 	// Position
 	// The position that the origin is at within the parent node
+
+	float getY() {
+		return mPosition.y;
+	}
+
+	float getX() {
+		return mPosition.x;
+	}
+
+	Node &setY(float y) {
+		return setPosition(mPosition.x, y);
+	};
+
+	Node &setX(float x) {
+		return setPosition(x, mPosition.y);
+	};
+
 	//! Set the position of the node with a ci::vec2
 	Node &setPosition(ci::vec2 position) {
 		return setPosition(position.x, position.y);
