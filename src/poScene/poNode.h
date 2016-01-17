@@ -30,10 +30,10 @@
 
 #pragma once
 
-#include "cinder/Signals.h"
 #include "cinder/Cinder.h"
 #include "cinder/CinderMath.h"
 #include "cinder/Exception.h"
+#include "cinder/Signals.h"
 #include "cinder/Timeline.h"
 #include "cinder/gl/Fbo.h"
 #include "cinder/gl/GlslProg.h"
