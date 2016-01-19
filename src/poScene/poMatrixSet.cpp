@@ -40,8 +40,9 @@ void MatrixSet::set(glm::mat4x4 modelview, glm::mat4x4 projection, ci::Area view
 }
 
 ci::vec2 MatrixSet::globalToLocal(const ci::vec2 &point) {
-	// Flip Y
-	ci::vec3 p(point.x, (mViewport.w - mViewport.y) - point.y, 0.f);
+	// Flip Y ?
+	ci::vec3 p(point.x, (mViewport.w - mViewport.y) - point.y, 0.f); // hmm no longer needed?
+	// ci::vec3 p(point.x, point.y, 0.0);
 	ci::vec3 r = unProject(p);
 	return ci::vec2(r.x, r.y);
 }
@@ -50,13 +51,13 @@ ci::vec2 MatrixSet::localToGlobal(const ci::vec2 &point) {
 	glm::mat4x4 a = mProjection * mModelview;
 	a = glm::inverse(a);
 	ci::vec3 p = project(ci::vec3(point.x, point.y, 0.f));
-	return ci::vec2(p.x, p.y);
+	return ci::vec2(p.x, (mViewport.w - mViewport.y) - p.y); // hmm does flipping this help?
 }
 
 ci::vec3 MatrixSet::project(const ci::vec3 &pt) {
 	return glm::project(pt, mModelview, mProjection, mViewport);
 }
-	
+
 ci::vec3 MatrixSet::unProject(const ci::vec3 &pt) {
 	return glm::unProject(pt, mModelview, mProjection, mViewport);
 }
