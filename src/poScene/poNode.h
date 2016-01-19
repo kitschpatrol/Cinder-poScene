@@ -292,6 +292,22 @@ public:
 	// Scale
 	// Scales around the origin of the node
 
+	float getScaleY() {
+		return mScale.y;
+	}
+
+	float getScaleX() {
+		return mScale.x;
+	}
+
+	Node &setScaleY(float y) {
+		return setScale(mScale.x, y);
+	};
+
+	Node &setScaleX(float x) {
+		return setPosition(x, mScale.y);
+	};
+
 	Node &setScale(float s) {
 		return setScale(s, s);
 	}
