@@ -305,7 +305,7 @@ public:
 	};
 
 	Node &setScaleX(float x) {
-		return setPosition(x, mScale.y);
+		return setScale(x, mScale.y);
 	};
 
 	Node &setScale(float s) {
