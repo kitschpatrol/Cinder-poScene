@@ -121,6 +121,9 @@ public:
 	//! Check if this node currently has a parent
 	bool hasParent();
 
+	bool hasSiblings();
+	std::deque<NodeRef> getSiblings();
+
 	//	Dimensions
 	//  Dimensions are determined by the getBounds() function
 	//  Override this function for custom bounds, i.e. invisible hit areas

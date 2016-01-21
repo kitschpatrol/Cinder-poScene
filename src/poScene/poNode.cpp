@@ -657,6 +657,23 @@ NodeContainerRef Node::getParent() const {
 	return mParent.lock();
 }
 
+bool Node::hasSiblings() {
+	return hasParent() && (getParent()->getNumChildren() > 1);
+}
+
+std::deque<NodeRef> Node::getSiblings() {
+	std::deque<NodeRef> siblings;
+
+	if (hasSiblings()) {
+		for (auto &sibling : getParent()->getChildrenByReference()) {
+			if (sibling.get() != this) {
+				siblings.push_back(sibling);
+			}
+		}
+	}
+	return siblings;
+}
+
 bool Node::hasParent() {
 	return mHasParent;
 }
