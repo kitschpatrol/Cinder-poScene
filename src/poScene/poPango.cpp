@@ -1,37 +1,37 @@
-#include "poPangoNode.h"
+#include "poPango.h"
 
 namespace po {
 namespace scene {
 
-PangoNodeRef PangoNode::create() {
-	return PangoNode::create(0, 0);
+PangoRef Pango::create() {
+	return Pango::create(0, 0);
 }
 
-PangoNodeRef PangoNode::create(float maxWidth, float maxHeight) {
-	PangoNodeRef ref = std::shared_ptr<PangoNode>(new PangoNode());
+PangoRef Pango::create(float maxWidth, float maxHeight) {
+	PangoRef ref = std::shared_ptr<Pango>(new Pango());
 	ref->setup(maxWidth, maxHeight);
 	return ref;
 }
 
-PangoNode::PangoNode() {
+Pango::Pango() {
 }
 
-PangoNode::~PangoNode() {
+Pango::~Pango() {
 }
 
-void PangoNode::setup(float maxWidth, float maxHeight) {
+void Pango::setup(float maxWidth, float maxHeight) {
 	mPango = kp::pango::CinderPango::create();
 	mPango->setMaxSize(maxWidth, maxHeight);
 }
 
-void PangoNode::update() {
+void Pango::update() {
 	if (mPango->render()) {
 		// Update alignment
 		this->setAlignment(this->getAlignment());
 	}
 }
 
-ci::Rectf PangoNode::getBounds() {
+ci::Rectf Pango::getBounds() {
 	if (mPango->getTexture()) {
 		return mPango->getTexture()->getBounds();
 	} else {
@@ -39,7 +39,7 @@ ci::Rectf PangoNode::getBounds() {
 	}
 }
 
-void PangoNode::draw() {
+void Pango::draw() {
 	// TODO background size?
 
 	if (mPango->getTexture()) {
@@ -49,7 +49,7 @@ void PangoNode::draw() {
 	}
 }
 
-const kp::pango::CinderPangoRef PangoNode::getPango() {
+const kp::pango::CinderPangoRef Pango::getPango() {
 	return mPango;
 }
 

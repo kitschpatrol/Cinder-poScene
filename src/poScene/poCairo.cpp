@@ -1,26 +1,26 @@
-#include "poCairoNode.h"
+#include "poCairo.h"
 
 namespace po {
 namespace scene {
 
-CairoNode::CairoNode() {
+Cairo::Cairo() {
 }
 
-CairoNode::~CairoNode() {
+Cairo::~Cairo() {
 }
 
-CairoNodeRef CairoNode::create() {
-	return CairoNode::create(100, 100);
+CairoRef Cairo::create() {
+	return Cairo::create(100, 100);
 }
 
-CairoNodeRef CairoNode::create(float width, float height) {
-	CairoNodeRef ref = std::shared_ptr<CairoNode>(new CairoNode());
+CairoRef Cairo::create(float width, float height) {
+	CairoRef ref = std::shared_ptr<Cairo>(new Cairo());
 
 	ref->setup(width, height);
 	return ref;
 }
 
-void CairoNode::setup(float width, float height) {
+void Cairo::setup(float width, float height) {
 	setupSize = ci::vec2(width, height);
 	mIsRenderNeeded = false;
 
@@ -29,13 +29,13 @@ void CairoNode::setup(float width, float height) {
 	setNeedsRender(true);
 }
 
-void CairoNode::renderWithFunction(const std::function<void(ci::cairo::Context &, float, float)> &renderFunction) {
+void Cairo::renderWithFunction(const std::function<void(ci::cairo::Context &, float, float)> &renderFunction) {
 	renderFunction(mContext, setupSize.x, setupSize.y);
 	mTexture = ci::gl::Texture::create(mSurface.getSurface());
 	//	setNeedsRender(true);
 }
 
-void CairoNode::update() {
+void Cairo::update() {
 	if (mIsRenderNeeded) {
 		this->render();
 		mTexture = ci::gl::Texture::create(mSurface.getSurface());
@@ -43,11 +43,11 @@ void CairoNode::update() {
 	}
 }
 
-void CairoNode::setNeedsRender(bool value) {
+void Cairo::setNeedsRender(bool value) {
 	mIsRenderNeeded = value;
 }
 
-void CairoNode::draw() {
+void Cairo::draw() {
 	if (mTexture) {
 		ci::gl::enableAlphaBlendingPremult();
 		ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
@@ -55,14 +55,14 @@ void CairoNode::draw() {
 	}
 }
 
-void CairoNode::render() {
+void Cairo::render() {
 	// override this to draw something more interesting...
 	//	mContext.setSourceRgba(1.0, 1.0, 1.0, 1.0);
 	//	mContext.rectangle(this->getBounds());
 	//	mContext.fill();
 }
 
-ci::Rectf CairoNode::getBounds() {
+ci::Rectf Cairo::getBounds() {
 	if (mTexture) {
 		return mTexture->getBounds();
 	} else {

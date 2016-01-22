@@ -7,24 +7,24 @@
 namespace po {
 namespace scene {
 
-class CairoNode;
-typedef std::shared_ptr<CairoNode> CairoNodeRef;
+class Cairo;
+typedef std::shared_ptr<Cairo> CairoRef;
 
-class CairoNode : public Node {
+class Cairo : public Node {
 public:
-	//! Create an empty CairoNode (texture is a null_ptr, won't draw until set)
-	static CairoNodeRef create();
-	static CairoNodeRef create(float width, float height);
+	//! Create an empty Cairo (texture is a null_ptr, won't draw until set)
+	static CairoRef create();
+	static CairoRef create(float width, float height);
 
 	//! Draw the texture if set
 	void draw() override;
 	void update() override;
 
-	//! Get the bounds of the CairoNode
+	//! Get the bounds of the Cairo
 	ci::Rectf getBounds() override;
 
-	CairoNode();
-	virtual ~CairoNode();
+	Cairo();
+	virtual ~Cairo();
 
 	void setNeedsRender(bool value);
 	void renderWithFunction(const std::function<void(ci::cairo::Context &, float, float)> &renderFunction); // spares subclassing for trivial drawing

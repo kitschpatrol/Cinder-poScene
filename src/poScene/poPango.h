@@ -6,22 +6,22 @@
 namespace po {
 namespace scene {
 
-class PangoNode;
-typedef std::shared_ptr<PangoNode> PangoNodeRef;
+class Pango;
+typedef std::shared_ptr<Pango> PangoRef;
 
-class PangoNode : public Node {
+class Pango : public Node {
 public:
-	static PangoNodeRef create();
-	static PangoNodeRef create(float maxWidth, float maxHeight);
+	static PangoRef create();
+	static PangoRef create(float maxWidth, float maxHeight);
 
-	virtual ~PangoNode();
+	virtual ~Pango();
 
 	const kp::pango::CinderPangoRef getPango();
 	virtual ci::Rectf getBounds() override;
 
 protected:
 	void setup(float maxWidth, float maxHeight);
-	PangoNode();
+	Pango();
 	void update() override;
 	void draw() override;
 
