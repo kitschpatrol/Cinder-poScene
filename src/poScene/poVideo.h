@@ -133,5 +133,6 @@ using VideoRef = std::shared_ptr<Video<T>>;
 
 typedef Video<ci::qtime::MovieGl> VideoGl;
 typedef std::shared_ptr<VideoGl> VideoGlRef;
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

@@ -172,5 +172,6 @@ void Scene::resetFbos() {
 	mFbo.reset();
 	mMaskFbo.reset();
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

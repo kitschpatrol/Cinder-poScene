@@ -61,5 +61,6 @@ ci::vec3 MatrixSet::project(const ci::vec3 &pt) {
 ci::vec3 MatrixSet::unProject(const ci::vec3 &pt) {
 	return glm::unProject(pt, mModelview, mProjection, mViewport);
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

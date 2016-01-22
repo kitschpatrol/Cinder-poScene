@@ -182,5 +182,6 @@ static std::vector<ci::vec2> fitTexture(ci::Rectf rect, ci::gl::TextureRef tex, 
 	return coords;
 }
 }
-}
-} //  namespace po::scene::TextureFit
+
+} // namespace scene
+} // namespace po::TextureFit

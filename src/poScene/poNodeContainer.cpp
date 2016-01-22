@@ -391,5 +391,6 @@ void NodeContainer::calculateMatrices() {
 		matrixTree();
 	}
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

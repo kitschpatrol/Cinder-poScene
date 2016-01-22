@@ -719,5 +719,6 @@ private:
 
 	class NodeException : public ci::Exception {};
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

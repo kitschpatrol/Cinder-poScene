@@ -147,5 +147,6 @@ private:
 	ci::gl::FboRef mFbo;
 	ci::gl::FboRef mMaskFbo;
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

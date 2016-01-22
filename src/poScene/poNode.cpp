@@ -781,5 +781,6 @@ bool Node::isEligibleForInteractionEvent(const TouchEvent::Type &type) {
 	}
 	return false;
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po
