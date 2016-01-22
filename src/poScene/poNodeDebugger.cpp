@@ -11,6 +11,9 @@
 #include "ofxRemoteUIServer.h"
 #include "poShape.h"
 
+namespace po {
+namespace scene {
+
 NodeDebuggerRef NodeDebugger::create(po::scene::SceneRef scene) {
 	NodeDebuggerRef ref = NodeDebuggerRef(new NodeDebugger())->shared_from_this();
 	ref->setup(scene);
@@ -177,3 +180,6 @@ NodeDebugger::NodeDebugger() {
 NodeDebugger::~NodeDebugger() {
 	CI_LOG_V("NodeDebugger Destroyed");
 }
+
+} // namespace scene
+} // namespace po
