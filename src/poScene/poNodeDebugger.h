@@ -29,6 +29,11 @@ protected:
 	NodeDebugger();
 
 private:
+	// General utils
+
+	static void logChildren(po::scene::NodeRef node, int depth = 0);
+
+	// Scene-specific stuff?
 	void setup(po::scene::SceneRef scene);
 	po::scene::NodeRef mSelectedNode = nullptr;
 	po::scene::NodeRef mFakeNode = nullptr; // "fake" null node to receive RUI messages when nothing is selected
@@ -43,6 +48,13 @@ private:
 	float getNudgeForKeyEvent(ci::app::KeyEvent &event);
 
 	std::string mNameToShare;
+
+	void logNode(po::scene::NodeRef node);
+
+	// Dragging
+	bool mIsDragging = false;
+	ci::vec2 mDragStartNodePosition;
+	ci::vec2 mDragStartMousePosition;
 };
 
 } // namespace scene

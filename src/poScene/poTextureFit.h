@@ -36,7 +36,13 @@ namespace po {
 namespace scene {
 namespace TextureFit {
 
-enum class Type { NONE = 0, EXACT, WIDTH, HEIGHT, INSIDE };
+enum class Type {
+	NONE = 0,
+	EXACT,
+	WIDTH,
+	HEIGHT,
+	INSIDE,
+};
 
 static ci::vec2 alignInRect(ci::vec2 max, ci::Rectf rect, Alignment align) {
 	ci::vec2 offset;

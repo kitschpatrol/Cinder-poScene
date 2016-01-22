@@ -6,7 +6,12 @@
 
 #include "poNodeDebugger.h"
 
+#include "cinder/Clipboard.h"
 #include "cinder/Log.h"
+#include "cinder/Utilities.h"
+
+#include "CinderKit.h"
+#include "poNodeContainer.h"
 
 #include "ofxRemoteUIServer.h"
 #include "poShape.h"
@@ -39,13 +44,25 @@ NodeDebuggerRef NodeDebugger::create(po::scene::SceneRef scene) {
 	//		// mUiAlphaSliderRef->setValue(mSelectedNode->getAlpha());
 	//	}
 	//
-	//	//		// Print info no matter what
-	//	//		std::string position = "someNode->setPosition(" + kp::kit::toCodeString(mSelectedNode->getPosition()) + ");";
-	//	//		std::string scale = "someNode->setScale(" + ci::toString(mSelectedNode->getScale().x) + ");";
-	//	//		std::string alpha = "someNode->setAlpha(" + ci::toString(mSelectedNode->getAlpha()) + ");";
-	//	//		std::string info = position + "\n" + scale + "\n" + alpha;
-	//	//		ci::Clipboard::setString(info);
-	//	//		CI_LOG_V("\n" + info);
+}
+
+void NodeDebugger::logChildren(po::scene::NodeRef node, int depth) {
+	// Pad the string prefix
+	std::string prefix = depth == 0 ? "┌─" : "├─";
+	for (int i = 0; i < depth; i++) {
+		prefix += "─";
+	}
+
+	CI_LOG_V(prefix << node->getName());
+
+	depth++;
+
+	po::scene::NodeContainerRef container = std::dynamic_pointer_cast<po::scene::NodeContainer>(node);
+	if (container) {
+		for (po::scene::NodeRef &child : container->getChildrenByReference()) {
+			logChildren(child, depth);
+		}
+	}
 }
 
 void NodeDebugger::setup(po::scene::SceneRef scene) {
@@ -54,11 +71,101 @@ void NodeDebugger::setup(po::scene::SceneRef scene) {
 	mFakeNode->setName("None");
 	this->setSelectedNode(mFakeNode);
 
+	// Mouse Down
 	ci::app::getWindow()->getSignalMouseDown().connect([&](ci::app::MouseEvent event) {
 		if (event.isRightDown()) {
 			po::scene::NodeRef nodeUnderPoint = mScene->getNodeUnderPoint(event.getPos());
 			this->setSelectedNode(nodeUnderPoint);
+
+			if (mSelectedNode != mFakeNode) {
+				// logNode(mSelectedNode);
+				NodeDebugger::logChildren(mSelectedNode);
+			}
 		}
+	});
+
+	// Mouse Drag
+	ci::app::getWindow()->getSignalMouseDrag().connect([&](ci::app::MouseEvent event) { //
+		if (mSelectedNode != mFakeNode) {
+			// Find node
+			po::scene::NodeRef nodeUnderPoint = mScene->getNodeUnderPoint(event.getPos());
+
+			// Start Dragging
+			if (!mIsDragging && (nodeUnderPoint == mSelectedNode)) {
+				if (mSelectedNode->hasParent()) {
+					mDragStartNodePosition = mSelectedNode->getParent()->localToScene(mSelectedNode->getPosition());
+					mDragStartMousePosition = mSelectedNode->windowToScene(event.getPos());
+				} else {
+					mDragStartNodePosition = mSelectedNode->getPosition();
+					mDragStartMousePosition = event.getPos();
+				}
+
+				mIsDragging = true;
+			}
+
+			// Keep dragging
+			if (mIsDragging) {
+				ci::vec2 mousePosition = mSelectedNode->windowToScene(event.getPos());
+				if (mSelectedNode->hasParent()) {
+					mSelectedNode->setPosition(mSelectedNode->getParent()->sceneToLocal((mDragStartNodePosition + mousePosition) - mDragStartMousePosition));
+				} else {
+					mSelectedNode->setPosition((mDragStartNodePosition + static_cast<ci::vec2>(event.getPos())) - mDragStartMousePosition);
+				}
+			}
+		}
+	});
+
+	// Mouse Wheel
+	ci::app::getWindow()->getSignalMouseWheel().connect([&](ci::app::MouseEvent event) {
+		if (mSelectedNode != mFakeNode) {
+
+			if (event.isShiftDown()) {
+				// Ierate through siblings
+				if (mSelectedNode->hasSiblings()) {
+
+					int myIndex = mSelectedNode->getParent()->getChildIndex(mSelectedNode);
+					int siblingIndex = myIndex + ((event.getWheelIncrement() > 0.0) ? 1 : -1);
+
+					if (siblingIndex < 0) {
+						CI_LOG_V("No previous sibling");
+					} else if (siblingIndex > mSelectedNode->getParent()->getNumChildren() - 1) {
+						CI_LOG_V("No next sibling");
+					} else {
+						this->setSelectedNode(mSelectedNode->getParent()->getChildByIndex(siblingIndex));
+					}
+
+				} else {
+					CI_LOG_V("Only child");
+				}
+
+			} else {
+				// Iterate through parents / children
+				if (event.getWheelIncrement() < 0.0) {
+					// up
+					if (mSelectedNode->hasParent()) {
+						this->setSelectedNode(mSelectedNode->getParent());
+					} else {
+						CI_LOG_V("At top");
+					}
+
+				} else {
+					po::scene::NodeContainerRef container = std::dynamic_pointer_cast<po::scene::NodeContainer>(mSelectedNode);
+					if (container && container->hasChildren()) {
+						this->setSelectedNode(container->getFirstChild());
+					} else {
+						CI_LOG_V("At Bottom");
+					}
+				}
+			}
+		}
+	});
+
+	ci::app::getWindow()->getSignalMouseUp().connect([&](ci::app::MouseEvent event) { //
+		if (mIsDragging) {
+			// logNode(mSelectedNode);
+			mIsDragging = false;
+		}
+
 	});
 
 	ci::app::getWindow()->getSignalKeyDown().connect([&](ci::app::KeyEvent event) {
@@ -107,9 +214,21 @@ void NodeDebugger::removeParamIfExists(std::string paramName) {
 }
 
 void NodeDebugger::setSelectedNode(po::scene::NodeRef node) {
-	// Map null to fake...
-	if ((node == nullptr) || (node == mScene->getRootNode())) {
+
+	if (node == nullptr) {
+		// Map null to fake...
+		CI_LOG_V("trying again rather than set node to " << node->getName());
 		setSelectedNode(mFakeNode); // try again
+		return;
+	} else if (false && (node == mScene->getRootNode())) {
+		// Map root to its first child... can't manipulate root
+		if (mScene->getRootNode()->hasChildren()) {
+			setSelectedNode(mScene->getRootNode()->getChildByIndex(0));
+			return;
+		} else {
+			setSelectedNode(mFakeNode); // try again
+			return;
+		}
 	}
 
 	if (mSelectedNode != node) {
@@ -127,16 +246,19 @@ void NodeDebugger::setSelectedNode(po::scene::NodeRef node) {
 		removeParamIfExists("Node Offset Y");
 		removeParamIfExists("Node Rotation");
 		removeParamIfExists("Node Scale");
+		removeParamIfExists("Node Scale X");
+		removeParamIfExists("Node Scale Y");
+		removeParamIfExists("Node Log");
 
 		// Set up the new
 		mSelectedNode = node;
+
+		CI_LOG_V("Selected node: " << mSelectedNode->getName());
 
 		if (mSelectedNode != mFakeNode) {
 			mSelectedNode->setDrawBounds(true);
 			mSelectedNode->setBoundsColor(ci::Color("yellow"));
 		}
-
-		CI_LOG_V("Selected node: " << mSelectedNode->getName());
 
 		RUI_NEW_GROUP("Node Debugger");
 
@@ -163,14 +285,62 @@ void NodeDebugger::setSelectedNode(po::scene::NodeRef node) {
 													 [&]() -> float { return mSelectedNode->getRotation(); }, //
 													 [&](float value) { mSelectedNode->setRotation(value); }, //
 													 -M_PI, M_PI);
+
+		const float scaleMin = 0.0;
+		const float scaleMax = 2.0;
 		RUI_SHARE_GS_PARAM_WCN("Node Scale",																					 //
 													 [&]() -> float { return mSelectedNode->getScale().x; }, //
 													 [&](float value) { mSelectedNode->setScale(value); },	 //
-													 -10.0, 10.0);
+													 scaleMin, scaleMax);
+		RUI_SHARE_GS_PARAM_WCN("Node Scale X",																				//
+													 [&]() -> float { return mSelectedNode->getScaleX(); }, //
+													 [&](float value) { mSelectedNode->setScaleX(value); }, //
+													 scaleMin, scaleMax);
+		RUI_SHARE_GS_PARAM_WCN("Node Scale Y",																				//
+													 [&]() -> float { return mSelectedNode->getScaleY(); }, //
+													 [&](float value) { mSelectedNode->setScaleY(value); }, //
+													 scaleMin, scaleMax);
+		RUI_SHARE_GS_PARAM_WCN("Node Log",											//
+													 [&]() -> bool { return false; }, //
+													 [&](bool value) {
+														 this->logNode(mSelectedNode);
+														 ofxRemoteUIServer::instance()->pushParamsToClient();
+													 });
 
 		// Regardless, feed RUI
+
 		ofxRemoteUIServer::instance()->pushParamsToClient();
 	}
+}
+
+void NodeDebugger::logNode(po::scene::NodeRef node) {
+	std::string name = "Node Name: " + node->getName();
+
+	std::string position = "someNode->setPosition(" + kp::kit::toCodeString(node->getPosition()) + ");";
+	std::string scale = "someNode->setScale(" + ci::toString(node->getScale().x) + ");";
+	std::string alpha = "someNode->setAlpha(" + ci::toString(node->getAlpha()) + ");";
+	std::string rotation = "someNode->setRotation(" + ci::toString(node->getRotation()) + ");";
+	std::string bounds = "Bounds: " + kp::kit::toCodeString(node->getBounds());
+
+	std::string rectInParent = "Rect in parent: ";
+	if (node->hasParent()) {
+		ci::vec2 ul = node->localToNode(node->getBounds().getUpperLeft(), node->getParent());
+		ci::vec2 lr = node->localToNode(node->getBounds().getLowerRight(), node->getParent());
+
+		rectInParent += kp::kit::toCodeString(ci::Rectf(ul, lr));
+		;
+	} else {
+		rectInParent += "No Parent.";
+	}
+
+	std::string info =
+			"-------\n" + name + "\n\n" + position + "\n" + scale + "\n" + rotation + "\n" + alpha + "\n\n" + bounds + "\n" + rectInParent + "\n-------\n";
+
+	ci::Clipboard::setString(info);
+	std::cout << info << std::endl;
+
+	std::cout << kp::kit::toCodeString(node->getPosition()) << ", " << kp::kit::toCodeString(node->getScale()) << ", " << node->getRotation() << "),"
+						<< std::endl;
 }
 
 NodeDebugger::NodeDebugger() {
