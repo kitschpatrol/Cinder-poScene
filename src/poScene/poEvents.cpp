@@ -75,5 +75,6 @@ MouseEvent::MouseEvent(ci::app::MouseEvent event, Type type) : mCiEvent(event), 
 TouchEvent::TouchEvent(ci::app::TouchEvent::Touch event, Type type) : mCiEvent(event), mType(type) {
 	mWindowPos = event.getPos();
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

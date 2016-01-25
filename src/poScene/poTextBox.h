@@ -81,5 +81,6 @@ private:
 	ci::gl::Texture::Format mFormat;
 	bool mHasFormat;
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

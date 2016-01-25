@@ -62,5 +62,6 @@ void EventCenter::processEvents(std::vector<NodeRef> nodes) {
 	mMouseProcessor.processEvents(nodes);
 	mTouchProcessor.processEvents(nodes);
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

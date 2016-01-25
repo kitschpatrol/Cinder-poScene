@@ -72,5 +72,6 @@ protected:
 private:
 	ci::gl::TextureRef mTexture;
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

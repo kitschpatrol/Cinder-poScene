@@ -26,41 +26,47 @@
  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 
-#include "poMatrixSet.h"
+#pragma once
+
+#include "cinder/gl/draw.h"
+
+#include "ciWMFVideoPlayer.h"
+
+#include "poNode.h"
 
 namespace po {
 namespace scene {
 
-void MatrixSet::set(glm::mat4x4 modelview, glm::mat4x4 projection, ci::Area viewport) {
-	mModelview = modelview;
-	mProjection = projection;
-	mViewport = glm::vec4(viewport.getX1(), viewport.getY1(), viewport.getX2(), viewport.getY2());
-}
+class VideoNative;
+typedef std::shared_ptr<VideoNative> VideoNativeRef;
 
-ci::vec2 MatrixSet::globalToLocal(const ci::vec2 &point) {
-	// Flip Y ?
-	ci::vec3 p(point.x, (mViewport.w - mViewport.y) - point.y, 0.f); // hmm no longer needed?
-	// ci::vec3 p(point.x, point.y, 0.0);
-	ci::vec3 r = unProject(p);
-	return ci::vec2(r.x, r.y);
-}
+class VideoNative : public Node {
+public:
+	static VideoNativeRef create();
+	void setup();
+	void update();
+	void draw();
 
-ci::vec2 MatrixSet::localToGlobal(const ci::vec2 &point) {
-	glm::mat4x4 a = mProjection * mModelview;
-	a = glm::inverse(a);
-	ci::vec3 p = project(ci::vec3(point.x, point.y, 0.f));
-	return ci::vec2(p.x, (mViewport.w - mViewport.y) - p.y); // hmm does flipping this help?
-}
+	void load(ci::fs::path path);
+	void play();
+	void pause();
+	void stop();
+	void setPlayheadPosition(float value);
+	void setLoopEnabled(bool enabled);
+	float getDuration();
 
-ci::vec3 MatrixSet::project(const ci::vec3 &pt) {
-	return glm::project(pt, mModelview, mProjection, mViewport);
-}
+	//! Get the bounds of the Image
+	ci::Rectf getBounds();
+	~VideoNative();
+protected:
+	VideoNative();
 
-ci::vec3 MatrixSet::unProject(const ci::vec3 &pt) {
-	return glm::unProject(pt, mModelview, mProjection, mViewport);
-}
+private:
+	bool mLoopEnabled;
+	ciWMFVideoPlayer mBackingVideo;
+};
 
 } // namespace scene
 } // namespace po

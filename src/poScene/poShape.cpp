@@ -237,5 +237,6 @@ ci::Rectf Shape::getBounds() {
 
 	return mBounds;
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

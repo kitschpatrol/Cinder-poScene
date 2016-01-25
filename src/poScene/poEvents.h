@@ -181,5 +181,6 @@ private:
 	ci::app::TouchEvent::Touch mCiEvent;
 	Type mType;
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

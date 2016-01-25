@@ -139,5 +139,6 @@ private:
 
 	int mPrecision;
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

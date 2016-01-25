@@ -85,7 +85,6 @@ NodeRef Scene::getNodeUnderPoint(ci::vec2 point) {
 
 	for (NodeRef &node : nodes) {
 		if (node->pointInside(point)) {
-			std::cout << "Node under point: " << node << std::endl;
 			return node;
 		}
 	}
@@ -173,5 +172,6 @@ void Scene::resetFbos() {
 	mFbo.reset();
 	mMaskFbo.reset();
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

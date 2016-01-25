@@ -44,6 +44,7 @@
 
 #include "Resources.h"
 #include "cinder/CinderMath.h"
+#include "cinder/Utilities.h"
 #include "poNode.h"
 #include "poNodeContainer.h"
 #include "poScene.h"
@@ -53,7 +54,7 @@ namespace po {
 namespace scene {
 
 static uint32_t OBJECT_UID = 0;
-static const int ORIGIN_SIZE = 2;
+static const int ORIGIN_SIZE = 8;
 
 // Masking Shader
 static ci::gl::GlslProgRef mMaskShader = nullptr;
@@ -83,7 +84,7 @@ static const char *maskFragShader = CI_GLSL(150, in highp vec2 TexCoord;
 
 Node::Node(std::string name)
 		: mUid(OBJECT_UID++)
-		, mName(name)
+		, mName("Node " + ci::toString(OBJECT_UID) + " @ " + ci::toString(this)) // Default to something semi-sensible
 		, mDrawOrder(0)
 		, mPosition(0.f, 0.f)
 		, mScale(1.f, 1.f)
@@ -165,7 +166,6 @@ void Node::beginDrawTree() {
 
 void Node::drawTree() {
 	if (mVisible) {
-
 		//  Draw
 		beginDrawTree();
 
@@ -182,8 +182,9 @@ void Node::drawTree() {
 
 void Node::finishDrawTree() {
 	//	Draw bounds if necessary
-	if (mDrawBounds)
+	if (mDrawBounds) {
 		drawBounds();
+	}
 
 	//	Pop our Matrix
 	ci::gl::popModelView();
@@ -231,12 +232,13 @@ void Node::drawMasked(bool useWindowMatrix) {
 	ci::gl::ScopedTextureBind fboBind(getScene()->getWindowFbo()->getColorTexture(), 0);
 	ci::gl::ScopedTextureBind maskBind(getScene()->getMaskFbo()->getColorTexture(), 1);
 
-	//	Bind Shader
-	mMaskShader->bind();
-
 	//	Set uniforms
 	mMaskShader->uniform("tex", 0);
 	mMaskShader->uniform("mask", 1);
+
+	// Bind shader
+	// See https://github.com/cinder/Cinder/issues/836
+	ci::gl::ScopedGlslProg shaderScp(mMaskShader);
 
 	//	Draw
 	ci::gl::drawSolidRect(getScene()->getWindowFbo()->getBounds());
@@ -391,13 +393,29 @@ Node &Node::setFillColor(ci::Color color) {
 	return *this;
 }
 
+Node &Node::setOffsetNormalized(ci::vec2 offset) {
+	return setOffsetNormalized(offset.x, offset.y);
+}
+
+Node &Node::setOffsetNormalized(float x, float y) {
+	return setOffset(x * getWidth(), y * getHeight());
+}
+
+ci::vec2 Node::getOffsetNormalized() {
+	if (getWidth() == 0 || getHeight() == 0) {
+		return ci::vec2(0);
+	} else {
+		return ci::vec2(mOffset.x / getWidth(), mOffset.y / getHeight());
+	}
+}
+
 //
 //	Offset the whole node from the origin
 //
 Node &Node::setOffset(float x, float y) {
 	mOffsetAnim.stop();
 	mUpdateOffsetFromAnim = false;
-	mOffset - ci::vec2(x, y);
+	mOffset = ci::vec2(x, y);
 	mOffsetAnim = mOffset;
 	mFrameDirty = true;
 
@@ -420,7 +438,7 @@ bool Node::isVisible() {
 		if (!parent->mVisible) {
 			return false;
 		}
-		
+
 		parent = parent->getParent();
 	}
 
@@ -639,6 +657,23 @@ NodeContainerRef Node::getParent() const {
 	return mParent.lock();
 }
 
+bool Node::hasSiblings() {
+	return hasParent() && (getParent()->getNumChildren() > 1);
+}
+
+std::deque<NodeRef> Node::getSiblings() {
+	std::deque<NodeRef> siblings;
+
+	if (hasSiblings()) {
+		for (auto &sibling : getParent()->getChildrenByReference()) {
+			if (sibling.get() != this) {
+				siblings.push_back(sibling);
+			}
+		}
+	}
+	return siblings;
+}
+
 bool Node::hasParent() {
 	return mHasParent;
 }
@@ -697,13 +732,9 @@ ci::Rectf Node::getFrame() {
 //
 
 bool Node::isEligibleForInteractionEvents() {
-  if (!hasScene() ||
-      !isInteractionEnabled() ||
-			!isVisible() ||
-			mScale.x == 0.0f ||
-			mScale.y == 0.0f) {
-        return false;
-			}
+	if (!hasScene() || !isInteractionEnabled() || !isVisible() || mScale.x == 0.0f || mScale.y == 0.0f) {
+		return false;
+	}
 	return true;
 }
 
@@ -750,5 +781,6 @@ bool Node::isEligibleForInteractionEvent(const TouchEvent::Type &type) {
 	}
 	return false;
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

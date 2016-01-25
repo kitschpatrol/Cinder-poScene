@@ -30,15 +30,16 @@
 
 #pragma once
 
-#include "boost/signals2.hpp"
 #include "cinder/Cinder.h"
 #include "cinder/CinderMath.h"
 #include "cinder/Exception.h"
+#include "cinder/Signals.h"
 #include "cinder/Timeline.h"
 #include "cinder/gl/Fbo.h"
 #include "cinder/gl/GlslProg.h"
 #include "poEvents.h"
 #include "poMatrixSet.h"
+#include <deque>
 
 #ifdef CINDER_MSW
 #include <deque>
@@ -124,6 +125,9 @@ public:
 	//! Check if this node currently has a parent
 	bool hasParent();
 
+	bool hasSiblings();
+	std::deque<NodeRef> getSiblings();
+
 	//	Dimensions
 	//  Dimensions are determined by the getBounds() function
 	//  Override this function for custom bounds, i.e. invisible hit areas
@@ -165,7 +169,6 @@ public:
 	//! Draw a frame around the bounds, useful for debugging
 	Node &setDrawBounds(bool enabled) {
 		mDrawBounds = enabled;
-
 		return *this;
 	};
 
@@ -265,6 +268,23 @@ public:
 
 	// Position
 	// The position that the origin is at within the parent node
+
+	float getY() {
+		return mPosition.y;
+	}
+
+	float getX() {
+		return mPosition.x;
+	}
+
+	Node &setY(float y) {
+		return setPosition(mPosition.x, y);
+	};
+
+	Node &setX(float x) {
+		return setPosition(x, mPosition.y);
+	};
+
 	//! Set the position of the node with a ci::vec2
 	Node &setPosition(ci::vec2 position) {
 		return setPosition(position.x, position.y);
@@ -279,6 +299,22 @@ public:
 	// Scale
 	// Scales around the origin of the node
 
+	float getScaleY() {
+		return mScale.y;
+	}
+
+	float getScaleX() {
+		return mScale.x;
+	}
+
+	Node &setScaleY(float y) {
+		return setScale(mScale.x, y);
+	};
+
+	Node &setScaleX(float x) {
+		return setScale(x, mScale.y);
+	};
+
 	Node &setScale(float s) {
 		return setScale(s, s);
 	}
@@ -290,6 +326,7 @@ public:
 	//! Set the scale, convenience method
 	Node &setScale(float x, float y);
 	//! Get the scale
+
 	ci::vec2 getScale() {
 		return mScale;
 	};
@@ -298,9 +335,9 @@ public:
 	// Rotates around the origin of the node
 	// Expressed in degrees
 
-	//! Set the rotation (in degrees)
+	//! Set the rotation (in radians)
 	Node &setRotation(float rotation);
-	//! Get the rotation (in degrees)
+	//! Get the rotation (in radians)
 	float getRotation() {
 		return mRotation;
 	};
@@ -330,6 +367,10 @@ public:
 	// The offset of drawing, relative to the origin.
 	// This can be set either by using one of the built in alignments,
 	// or manually by using one of the below methods
+
+	Node &setOffsetNormalized(ci::vec2 offset);
+	Node &setOffsetNormalized(float x, float y);
+	ci::vec2 getOffsetNormalized();
 
 	//! Set the offset using a ci::vec2
 	Node &setOffset(ci::vec2 offset) {
@@ -682,5 +723,6 @@ private:
 
 	class NodeException : public ci::Exception {};
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

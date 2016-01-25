@@ -178,5 +178,6 @@ private:
 class NodeContainerException : public ci::Exception {};
 
 class NodeContainerInvalidChildException : public NodeContainerException {};
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

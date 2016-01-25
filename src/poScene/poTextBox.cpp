@@ -93,5 +93,6 @@ void TextBox::setFormat(ci::gl::Texture::Format format) {
 	mHasFormat = true;
 	render();
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po
