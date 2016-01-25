@@ -41,6 +41,10 @@
 #include "poMatrixSet.h"
 #include <deque>
 
+#ifdef CINDER_MSW
+#include <deque>
+#endif
+
 namespace po {
 namespace scene {
 
