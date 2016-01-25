@@ -25,6 +25,8 @@ public:
 	const po::scene::NodeRef getSelectedNode() const;
 	void setSelectedNode(po::scene::NodeRef node); // usually called internally
 
+
+
 protected:
 	NodeDebugger();
 
@@ -50,6 +52,7 @@ private:
 	std::string mNameToShare;
 
 	void logNode(po::scene::NodeRef node);
+
 
 	// Dragging
 	bool mIsDragging = false;

@@ -86,30 +86,32 @@ void NodeDebugger::setup(po::scene::SceneRef scene) {
 
 	// Mouse Drag
 	ci::app::getWindow()->getSignalMouseDrag().connect([&](ci::app::MouseEvent event) { //
-		if (mSelectedNode != mFakeNode) {
-			// Find node
-			po::scene::NodeRef nodeUnderPoint = mScene->getNodeUnderPoint(event.getPos());
+		if (event.isRightDown()) {
+			if (mSelectedNode != mFakeNode) {
+				// Find node
+				po::scene::NodeRef nodeUnderPoint = mScene->getNodeUnderPoint(event.getPos());
 
-			// Start Dragging
-			if (!mIsDragging && (nodeUnderPoint == mSelectedNode)) {
-				if (mSelectedNode->hasParent()) {
-					mDragStartNodePosition = mSelectedNode->getParent()->localToScene(mSelectedNode->getPosition());
-					mDragStartMousePosition = mSelectedNode->windowToScene(event.getPos());
-				} else {
-					mDragStartNodePosition = mSelectedNode->getPosition();
-					mDragStartMousePosition = event.getPos();
+				// Start Dragging
+				if (!mIsDragging && (nodeUnderPoint == mSelectedNode)) {
+					if (mSelectedNode->hasParent()) {
+						mDragStartNodePosition = mSelectedNode->getParent()->localToScene(mSelectedNode->getPosition());
+						mDragStartMousePosition = mSelectedNode->windowToScene(event.getPos());
+					} else {
+						mDragStartNodePosition = mSelectedNode->getPosition();
+						mDragStartMousePosition = event.getPos();
+					}
+
+					mIsDragging = true;
 				}
 
-				mIsDragging = true;
-			}
-
-			// Keep dragging
-			if (mIsDragging) {
-				ci::vec2 mousePosition = mSelectedNode->windowToScene(event.getPos());
-				if (mSelectedNode->hasParent()) {
-					mSelectedNode->setPosition(mSelectedNode->getParent()->sceneToLocal((mDragStartNodePosition + mousePosition) - mDragStartMousePosition));
-				} else {
-					mSelectedNode->setPosition((mDragStartNodePosition + static_cast<ci::vec2>(event.getPos())) - mDragStartMousePosition);
+				// Keep dragging
+				if (mIsDragging) {
+					ci::vec2 mousePosition = mSelectedNode->windowToScene(event.getPos());
+					if (mSelectedNode->hasParent()) {
+						mSelectedNode->setPosition(mSelectedNode->getParent()->sceneToLocal((mDragStartNodePosition + mousePosition) - mDragStartMousePosition));
+					} else {
+						mSelectedNode->setPosition((mDragStartNodePosition + static_cast<ci::vec2>(event.getPos())) - mDragStartMousePosition);
+					}
 				}
 			}
 		}
@@ -232,10 +234,10 @@ void NodeDebugger::setSelectedNode(po::scene::NodeRef node) {
 	}
 
 	if (mSelectedNode != node) {
-
 		// Clean up the old
 		if (mSelectedNode != nullptr && mSelectedNode != mFakeNode) {
 			mSelectedNode->setDrawBounds(false);
+			mSelectedNode->setIsSelectedByDebugger(false);
 		}
 
 		removeParamIfExists("Node Debugger");
@@ -257,6 +259,7 @@ void NodeDebugger::setSelectedNode(po::scene::NodeRef node) {
 
 		if (mSelectedNode != mFakeNode) {
 			mSelectedNode->setDrawBounds(true);
+			mSelectedNode->setIsSelectedByDebugger(true);
 			mSelectedNode->setBoundsColor(ci::Color("yellow"));
 		}
 
@@ -310,6 +313,8 @@ void NodeDebugger::setSelectedNode(po::scene::NodeRef node) {
 		// Regardless, feed RUI
 
 		ofxRemoteUIServer::instance()->pushParamsToClient();
+
+		// tell the node
 	}
 }
 

@@ -39,7 +39,9 @@ namespace scene {
 //	Base Event
 //------------------------------------
 
-Event::Event() : mPropagationEnabled(false), mWindowPos(0, 0) {
+Event::Event()
+		: mPropagationEnabled(false)
+		, mWindowPos(0, 0) {
 }
 
 ci::vec2 Event::getScenePos() {
@@ -64,7 +66,9 @@ ci::vec2 Event::getLocalPos() {
 //	Mouse Event
 //------------------------------------
 
-MouseEvent::MouseEvent(ci::app::MouseEvent event, Type type) : mCiEvent(event), mType(type) {
+MouseEvent::MouseEvent(ci::app::MouseEvent event, Type type)
+		: mCiEvent(event)
+		, mType(type) {
 	mWindowPos = event.getPos();
 }
 
@@ -72,7 +76,9 @@ MouseEvent::MouseEvent(ci::app::MouseEvent event, Type type) : mCiEvent(event), 
 //	Touch Event
 //------------------------------------
 
-TouchEvent::TouchEvent(ci::app::TouchEvent::Touch event, Type type) : mCiEvent(event), mType(type) {
+TouchEvent::TouchEvent(ci::app::TouchEvent::Touch event, Type type)
+		: mCiEvent(event)
+		, mType(type) {
 	mWindowPos = event.getPos();
 }
 

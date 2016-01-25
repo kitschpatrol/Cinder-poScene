@@ -683,6 +683,21 @@ void Node::removeParent() {
 	mHasParent = false;
 }
 
+bool Node::getIsSelectedByDebugger() {
+	return mIsSelectedByDebugger;
+}
+
+void Node::setIsSelectedByDebugger(bool selected) {
+	if (mIsSelectedByDebugger != selected) {
+		mIsSelectedByDebugger = selected;
+		mSignalSelectionByDebuggerChanged.emit();
+	}
+}
+
+ci::signals::Signal<void()> *Node::getSignalSelectionByDebuggerChanged() {
+	return &mSignalSelectionByDebuggerChanged;
+}
+
 //------------------------------------
 //  Dimensions
 //------------------------------------

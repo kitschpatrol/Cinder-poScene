@@ -573,6 +573,11 @@ public:
 		return mTouchEventSignals[type];
 	}
 
+	// Debugger helper. put this on scene instead?
+	ci::signals::Signal<void()> *getSignalSelectionByDebuggerChanged();
+	bool getIsSelectedByDebugger();
+	void setIsSelectedByDebugger(bool selected);
+
 protected:
 	// Constructor
 	Node(std::string name = "");
@@ -685,6 +690,9 @@ private:
 	//	Parent
 	std::weak_ptr<NodeContainer> mParent;
 	bool mHasParent;
+
+	ci::signals::Signal<void()> mSignalSelectionByDebuggerChanged;
+	bool mIsSelectedByDebugger = false;
 
 	//	Bounds and frame
 	//! Draw the bounds/frame
