@@ -32,7 +32,16 @@
 
 #include "cinder/gl/draw.h"
 
+#ifdef CINDER_MSW
 #include "ciWMFVideoPlayer.h"
+#endif
+
+#ifdef CINDER_MAC
+#include "cinder/qtime/QuickTime.h"
+#include "cinder/qtime/QuickTimeGlImplAvf.h"
+
+typedef std::shared_ptr<ci::qtime::MovieGl> ciAvfVideoPlayer;
+#endif
 
 #include "poNode.h"
 
@@ -60,12 +69,19 @@ public:
 	//! Get the bounds of the Image
 	ci::Rectf getBounds();
 	~VideoNative();
+
 protected:
 	VideoNative();
 
 private:
 	bool mLoopEnabled;
+#ifdef CINDER_MSW
 	ciWMFVideoPlayer mBackingVideo;
+#endif
+
+#ifdef CINDER_MAC
+	ciAvfVideoPlayer mBackingVideo;
+#endif
 };
 
 } // namespace scene
