@@ -145,7 +145,7 @@ void NodeDebugger::setup(po::scene::SceneRef scene) {
 				if (mSelectedNode->hasSiblings()) {
 
 					int myIndex = mSelectedNode->getParent()->getChildIndex(mSelectedNode);
-					int siblingIndex = myIndex + ((event.getWheelIncrement() > 0.0) ? 1 : -1);
+					int siblingIndex = myIndex + ((event.getWheelIncrement() > 0.0) ? -1 : 1);
 
 					if (siblingIndex < 0) {
 						CI_LOG_V("No previous sibling");
@@ -161,7 +161,7 @@ void NodeDebugger::setup(po::scene::SceneRef scene) {
 
 			} else {
 				// Iterate through parents / children
-				if (event.getWheelIncrement() < 0.0) {
+				if (event.getWheelIncrement() > 0.0) {
 					// up
 					if (mSelectedNode->hasParent()) {
 						this->setSelectedNode(mSelectedNode->getParent());
