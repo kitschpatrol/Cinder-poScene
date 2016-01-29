@@ -126,7 +126,12 @@ float VideoNative::getDuration() {
 
 ci::Rectf VideoNative::getBounds() {
 #ifdef CINDER_MAC
-	return ci::Rectf(0, 0, mBackingVideo->getWidth(), mBackingVideo->getHeight());
+
+	if (mBackingVideo) {
+		return ci::Rectf(0, 0, mBackingVideo->getWidth(), mBackingVideo->getHeight());
+	} else {
+		return ci::Rectf::zero();
+	}
 #endif
 
 #ifdef CINDER_MSW
