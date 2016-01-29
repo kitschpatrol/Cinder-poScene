@@ -25,8 +25,6 @@ public:
 	const po::scene::NodeRef getSelectedNode() const;
 	void setSelectedNode(po::scene::NodeRef node); // usually called internally
 
-
-
 protected:
 	NodeDebugger();
 
@@ -53,11 +51,13 @@ private:
 
 	void logNode(po::scene::NodeRef node);
 
-
 	// Dragging
 	bool mIsDragging = false;
 	ci::vec2 mDragStartNodePosition;
 	ci::vec2 mDragStartMousePosition;
+
+	// Helper to optionally select containers
+	po::scene::NodeRef  getNodeUnderPoint(ci::vec2 point, bool containersOnly = false);
 };
 
 } // namespace scene

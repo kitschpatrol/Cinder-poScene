@@ -65,6 +65,25 @@ void NodeDebugger::logChildren(po::scene::NodeRef node, int depth) {
 	}
 }
 
+po::scene::NodeRef NodeDebugger::getNodeUnderPoint(ci::vec2 point, bool containersOnly) {
+	po::scene::NodeRef nodeUnderPoint = mScene->getNodeUnderPoint(point);
+
+	if (containersOnly && nodeUnderPoint) {
+		// See if it's a container
+		po::scene::NodeContainerRef nodeContainerUnderPoint = std::dynamic_pointer_cast<po::scene::NodeContainer>(nodeUnderPoint);
+
+		if (nodeContainerUnderPoint) {
+			// It's a container, return it
+			return nodeContainerUnderPoint;
+		} else {
+			// It's not... get the parent
+			return nodeUnderPoint->getParent();
+		}
+	} else {
+		return nodeUnderPoint;
+	}
+}
+
 void NodeDebugger::setup(po::scene::SceneRef scene) {
 	mScene = scene;
 	mFakeNode = po::scene::Shape::create();
@@ -74,7 +93,7 @@ void NodeDebugger::setup(po::scene::SceneRef scene) {
 	// Mouse Down
 	ci::app::getWindow()->getSignalMouseDown().connect([&](ci::app::MouseEvent event) {
 		if (event.isRightDown()) {
-			po::scene::NodeRef nodeUnderPoint = mScene->getNodeUnderPoint(event.getPos());
+			po::scene::NodeRef nodeUnderPoint = getNodeUnderPoint(event.getPos(), event.isShiftDown());
 			this->setSelectedNode(nodeUnderPoint);
 
 			if (mSelectedNode != mFakeNode) {
@@ -89,7 +108,7 @@ void NodeDebugger::setup(po::scene::SceneRef scene) {
 		if (event.isRightDown()) {
 			if (mSelectedNode != mFakeNode) {
 				// Find node
-				po::scene::NodeRef nodeUnderPoint = mScene->getNodeUnderPoint(event.getPos());
+				po::scene::NodeRef nodeUnderPoint = getNodeUnderPoint(event.getPos(), event.isShiftDown());
 
 				// Start Dragging
 				if (!mIsDragging && (nodeUnderPoint == mSelectedNode)) {
