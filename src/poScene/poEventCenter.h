@@ -210,16 +210,12 @@ private:
 
 	//	Touch Event Cinder Callbacks
 	void touchesBegan(ci::app::TouchEvent event) {
-		std::cout << " Began " << std::endl;
-
 		mTouchProcessor.addToQueue(TouchEvent::Type::BEGAN, event);
 	};
 	void touchesMoved(ci::app::TouchEvent event) {
-		std::cout << " moved" << std::endl;
 		mTouchProcessor.addToQueue(TouchEvent::Type::MOVED, event);
 	};
 	void touchesEnded(ci::app::TouchEvent event) {
-		std::cout << " Ended" << std::endl;
 		mTouchProcessor.addToQueue(TouchEvent::Type::ENDED, event);
 	};
 };
