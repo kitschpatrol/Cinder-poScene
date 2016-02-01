@@ -62,6 +62,9 @@ public:
 	void play();
 	void pause();
 	void stop();
+	
+	bool isPlaying();
+	
 	void setPlayheadPosition(float value);
 	void setLoopEnabled(bool enabled);
 	float getDuration();

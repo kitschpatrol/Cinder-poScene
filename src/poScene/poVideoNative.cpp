@@ -34,6 +34,21 @@ void VideoNative::update() {
 	// Nothing for mac?
 }
 
+bool VideoNative::isPlaying() {
+#ifdef CINDER_MSW
+// TODO
+#endif
+#ifdef CINDER_MAC
+
+	if (mBackingVideo && mBackingVideo->isLoaded()) {
+		return mBackingVideo->isPlaying();
+	} else {
+		return false;
+	}
+
+#endif
+}
+
 void VideoNative::draw() {
 	ci::gl::enableAlphaBlending();
 	ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
