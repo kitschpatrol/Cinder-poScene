@@ -36,7 +36,7 @@ void VideoNative::update() {
 
 bool VideoNative::isPlaying() {
 #ifdef CINDER_MSW
-// TODO
+	return mBackingVideo.isPlaying();
 #endif
 #ifdef CINDER_MAC
 
