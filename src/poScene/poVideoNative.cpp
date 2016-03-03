@@ -50,8 +50,8 @@ bool VideoNative::isPlaying() {
 }
 
 void VideoNative::draw() {
-	ci::gl::enableAlphaBlending();
-	ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
+	ci::gl::ScopedBlendAdditive scopedBlending;
+	ci::gl::ScopedColor scopedColor(ci::ColorA(getFillColor(), getAppliedAlpha()));
 
 #ifdef CINDER_MAC
 	ci::gl::draw(mBackingVideo->getTexture());
