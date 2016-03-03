@@ -59,27 +59,29 @@ static const int ORIGIN_SIZE = 8;
 // Masking Shader
 static ci::gl::GlslProgRef mMaskShader = nullptr;
 
-static const char *maskVertShader = CI_GLSL(150, uniform mat4 ciModelViewProjection; in vec4 ciPosition; in vec2 ciTexCoord0; out highp vec2 TexCoord;
-
-																						void main() {
-																							TexCoord = ciTexCoord0.st;
-																							gl_Position = ciModelViewProjection * ciPosition;
+static const char *maskVertShader = CI_GLSL(150,
+																						uniform mat4 ciModelViewProjection;									//
+																						in vec4 ciPosition;																	//
+																						in vec2 ciTexCoord0;																//
+																						out highp vec2 TexCoord;														//
+																																																//
+																						void main() {																				//
+																							TexCoord = ciTexCoord0.st;												//
+																							gl_Position = ciModelViewProjection * ciPosition; //
 																						});
 
-static const char *maskFragShader = CI_GLSL(150, in highp vec2 TexCoord;
-
-																						uniform sampler2D tex; uniform sampler2D mask;
-
-																						out vec4 color;
-
-																						void main(void) {
-																							vec2 c0 = vec2(TexCoord.s, TexCoord.t);
-
-																							vec4 rgbValue = texture(tex, c0);
-																							vec4 alphaValue = texture(mask, c0);
-
-																							color.rgb = rgbValue.rgb;
-																							color.a = alphaValue.a * rgbValue.a;
+static const char *maskFragShader = CI_GLSL(150,
+																						in highp vec2 TexCoord;										//
+																						uniform sampler2D tex;										//
+																						uniform sampler2D mask;										//
+																						out vec4 color;														//
+																																											//
+																						void main(void) {													//
+																							vec2 c0 = vec2(TexCoord.s, TexCoord.t); //
+																							vec4 rgbValue = texture(tex, c0);				//
+																							vec4 alphaValue = texture(mask, c0);		//
+																							color.rgb = rgbValue.rgb;								//
+																							color.a = alphaValue.a * rgbValue.a;		//
 																						});
 
 Node::Node(std::string name)
@@ -220,7 +222,7 @@ void Node::captureMasked() {
 }
 
 void Node::drawMasked(bool useWindowMatrix) {
-	ci::gl::enableAlphaBlending();
+	ci::gl::ScopedBlendAlpha scopedBlend;
 
 	ci::gl::pushModelView();
 
@@ -709,7 +711,7 @@ ci::Rectf Node::getBounds() {
 }
 
 void Node::drawBounds() {
-	ci::gl::color(mBoundsColor);
+	ci::gl::ScopedColor scopedColor(mBoundsColor);
 
 	//	Draw bounding box
 	ci::gl::drawStrokedRect(getBounds());

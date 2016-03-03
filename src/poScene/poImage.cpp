@@ -48,8 +48,8 @@ Image::Image(ci::gl::TextureRef texture)
 
 void Image::draw() {
 	if (mTexture) {
-		ci::gl::enableAlphaBlending();
-		ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
+		ci::gl::ScopedBlendAlpha scopedBlend;
+		ci::gl::ScopedColor scopedColor(ci::ColorA(getFillColor(), getAppliedAlpha()));
 		ci::gl::draw(mTexture);
 	}
 }

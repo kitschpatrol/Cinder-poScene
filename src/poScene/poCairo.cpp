@@ -49,8 +49,8 @@ void Cairo::setNeedsRender(bool value) {
 
 void Cairo::draw() {
 	if (mTexture) {
-		ci::gl::enableAlphaBlendingPremult();
-		ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
+		ci::gl::ScopedBlendPremult scopedBlend;
+		ci::gl::ScopedColor scopedColor(ci::ColorA(getFillColor(), getAppliedAlpha()));
 		ci::gl::draw(mTexture);
 	}
 }

@@ -43,8 +43,8 @@ void Pango::draw() {
 	// TODO background size?
 
 	if (mPango->getTexture()) {
-		ci::gl::enableAlphaBlendingPremult();
-		ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
+		ci::gl::ScopedBlendPremult scopedBlend;
+		ci::gl::ScopedColor scopedColor(ci::ColorA(getFillColor(), getAppliedAlpha()));
 		ci::gl::draw(mPango->getTexture());
 	}
 }

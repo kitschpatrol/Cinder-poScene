@@ -122,7 +122,7 @@ void Video<T>::draw() {
 	// ci::app::console() << "getTexture -> " << mMovieRef->getTexture() << std::endl;
 
 	if (mMovieRef != nullptr && mMovieRef->getTexture()) {
-		ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
+		ci::gl::ScopedCoor scopedColor(ci::ColorA(getFillColor(), getAppliedAlpha()));
 		ci::gl::draw(mMovieRef->getTexture());
 	}
 }

@@ -106,7 +106,11 @@ ShapeRef Shape::createCircle(float diameter) {
 	return createEllipse(diameter, diameter);
 }
 
-Shape::Shape() : mPrecision(100), mTextureFitType(TextureFit::Type::NONE), mTextureAlignment(Alignment::TOP_LEFT), mTextureOffset(0, 0) {
+Shape::Shape()
+		: mPrecision(100)
+		, mTextureFitType(TextureFit::Type::NONE)
+		, mTextureAlignment(Alignment::TOP_LEFT)
+		, mTextureOffset(0, 0) {
 }
 
 Shape::~Shape() {
@@ -120,8 +124,8 @@ void Shape::setCiShape2d(ci::Shape2d shape) {
 void Shape::draw() {
 	// Draw fill
 	if (getFillEnabled()) {
-		ci::gl::enableAlphaBlending();
-		ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
+		ci::gl::ScopedBlendAlpha scopedBlend;
+		ci::gl::ScopedColor scopedColor(ci::ColorA(getFillColor(), getAppliedAlpha()));
 
 		if (mTexture) {
 			ci::gl::ScopedGlslProg shaderScp(ci::gl::getStockShader(ci::gl::ShaderDef().texture().color()));
