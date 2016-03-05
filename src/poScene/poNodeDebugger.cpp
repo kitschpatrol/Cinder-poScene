@@ -322,12 +322,15 @@ void NodeDebugger::setSelectedNode(po::scene::NodeRef node) {
 													 [&]() -> float { return mSelectedNode->getScaleY(); }, //
 													 [&](float value) { mSelectedNode->setScaleY(value); }, //
 													 scaleMin, scaleMax);
+#ifdef CINDER_MAC
+		// TODO fix issue with overloading on VS14
 		RUI_SHARE_GS_PARAM_WCN("Node Log",											//
 													 [&]() -> bool { return false; }, //
 													 [&](bool value) {
 														 this->logNode(mSelectedNode);
 														 ofxRemoteUIServer::instance()->pushParamsToClient();
 													 });
+#endif
 
 		// Regardless, feed RUI
 

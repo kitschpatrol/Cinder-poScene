@@ -31,8 +31,7 @@
 #pragma once
 
 #include "cinder/Text.h"
-#include "cinder/gl/Texture.h"
-#include "cinder/gl/draw.h"
+#include "cinder/gl/gl.h"
 #include "poNode.h"
 
 namespace po {

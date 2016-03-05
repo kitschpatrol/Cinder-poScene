@@ -1,7 +1,7 @@
 #pragma once
 
 #include "cinder/cairo/Cairo.h"
-#include "cinder/gl/draw.h"
+#include "cinder/gl/gl.h"
 #include "poNode.h"
 
 namespace po {

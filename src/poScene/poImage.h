@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "cinder/gl/draw.h"
+#include "cinder/gl/gl.h"
 #include "poNode.h"
 namespace po {
 namespace scene {
