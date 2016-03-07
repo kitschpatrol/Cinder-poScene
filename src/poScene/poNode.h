@@ -487,6 +487,7 @@ public:
 
 	//! Create an FBO, draw this node (and it's entire hierarchy if applicable) into it, and return the texture
 	ci::gl::TextureRef createTexture(bool drawMaskedEnabled = false);
+	ci::gl::TextureRef createTexture(bool drawMaskedEnabled = false, ci::gl::Fbo::Format fboFormat = ci::gl::Fbo::Format());
 
 	// Masking
 	// Nodes can be masked to another node

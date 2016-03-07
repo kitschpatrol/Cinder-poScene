@@ -287,18 +287,21 @@ NodeRef Node::removeMask() {
 //------------------------------------
 
 ci::gl::TextureRef Node::createTexture(bool drawMaskedEnabled) {
+	// Set default FBO format
+	ci::gl::Fbo::Format fboFormat;
+	fboFormat.setSamples(1);
+	fboFormat.enableDepthBuffer(false);
+
+	return createTexture(drawMaskedEnabled, fboFormat);
+}
+
+ci::gl::TextureRef Node::createTexture(bool drawMaskedEnabled, ci::gl::Fbo::Format fboFormat) {
 	//	We have to be visible, so if we aren't temporarily turn it on
 	bool visible = mVisible;
 	setVisible(true);
 
 	// Create an FBO to draw into
-	ci::gl::Fbo::Format format;
-	format.setSamples(1);
-	format.enableDepthBuffer(false);
-
-	//	Create and Bind the FBO
-
-	ci::gl::FboRef fbo = ci::gl::Fbo::create(getWidth(), getHeight(), format);
+	ci::gl::FboRef fbo = ci::gl::Fbo::create(getWidth(), getHeight(), fboFormat);
 	ci::gl::ScopedFramebuffer fboBind(fbo);
 
 	//	Set the viewport
