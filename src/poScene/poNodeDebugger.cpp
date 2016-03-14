@@ -290,11 +290,11 @@ void NodeDebugger::setSelectedNode(po::scene::NodeRef node) {
 		RUI_SHARE_GS_PARAM_WCN("Node Position X",																																				//
 													 [&]() -> float { return mSelectedNode->getPosition().x; },																//
 													 [&](float value) { mSelectedNode->setPosition(value, mSelectedNode->getPosition().y); }, //
-													 -ci::app::getWindowWidth(), 2 * ci::app::getWindowWidth());
+													 -ci::app::getWindowWidth() * 0.5, ci::app::getWindowWidth());
 		RUI_SHARE_GS_PARAM_WCN("Node Position Y",																																				//
 													 [&]() -> float { return mSelectedNode->getPosition().y; },																//
 													 [&](float value) { mSelectedNode->setPosition(mSelectedNode->getPosition().x, value); }, //
-													 -ci::app::getWindowHeight(), 2 * ci::app::getWindowHeight());
+													 -ci::app::getWindowHeight() * 0.5, ci::app::getWindowHeight());
 		RUI_SHARE_GS_PARAM_WCN("Node Offset X",																																													//
 													 [&]() -> float { return mSelectedNode->getOffsetNormalized().x; },																				//
 													 [&](float value) { mSelectedNode->setOffsetNormalized(value, mSelectedNode->getOffsetNormalized().y); }, //
@@ -306,10 +306,10 @@ void NodeDebugger::setSelectedNode(po::scene::NodeRef node) {
 		RUI_SHARE_GS_PARAM_WCN("Node Rotation",																					//
 													 [&]() -> float { return mSelectedNode->getRotation(); }, //
 													 [&](float value) { mSelectedNode->setRotation(value); }, //
-													 -M_PI, M_PI);
+													 -M_PI / 6.0f, M_PI / 6.0f);
 
-		const float scaleMin = 0.0;
-		const float scaleMax = 2.0;
+		const float scaleMin = 0.2;
+		const float scaleMax = 1.0;
 		RUI_SHARE_GS_PARAM_WCN("Node Scale",																					 //
 													 [&]() -> float { return mSelectedNode->getScale().x; }, //
 													 [&](float value) { mSelectedNode->setScale(value); },	 //
@@ -360,14 +360,12 @@ void NodeDebugger::logNode(po::scene::NodeRef node) {
 		rectInParent += "No Parent.";
 	}
 
-	std::string info =
-			"-------\n" + name + "\n\n" + position + "\n" + scale + "\n" + rotation + "\n" + alpha + "\n\n" + bounds + "\n" + rectInParent + "\n-------\n";
+	std::string info = "-------\n" + name + "\n\n" + position + "\n" + scale + "\n" + rotation + "\n" + alpha + "\n\n" + bounds + "\n" + rectInParent + "\n-------\n";
 
 	ci::Clipboard::setString(info);
 	std::cout << info << std::endl;
 
-	std::cout << kp::kit::toCodeString(node->getPosition()) << ", " << kp::kit::toCodeString(node->getScale()) << ", " << node->getRotation() << "),"
-						<< std::endl;
+	std::cout << kp::kit::toCodeString(node->getPosition()) << ", " << kp::kit::toCodeString(node->getScale()) << ", " << node->getRotation() << ")," << std::endl;
 }
 
 NodeDebugger::NodeDebugger() {
