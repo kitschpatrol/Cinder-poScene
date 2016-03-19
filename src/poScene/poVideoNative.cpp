@@ -1,5 +1,6 @@
 #include "poVideoNative.h"
 
+#include "cinder/Log.h"
 // TODO split this into two implementations...
 // OR just wrap WMF like MovieBase
 
@@ -24,11 +25,17 @@ VideoNative::~VideoNative() {
 void VideoNative::update() {
 #ifdef CINDER_MSW
 	mBackingVideo.update();
-
-	// Maintain the loop if necessary
-	if (mLoopEnabled && (mBackingVideo.getPosition() >= mBackingVideo.getDuration())) {
+	// native loop doesn't work
+	// big mess... position never == duration, stops short
+	// detect loops
+	if (mLoopEnabled && wasPlaying && (lastFrameTime != 0) && (mBackingVideo.getPosition() == 0)) {
 		mBackingVideo.setPosition(0);
+		mBackingVideo.play();
 	}
+
+	lastFrameTime = mBackingVideo.getPosition();
+	wasPlaying = mBackingVideo.isPlaying();
+
 #endif
 
 	// Nothing for mac?
@@ -79,6 +86,7 @@ void VideoNative::play() {
 #endif
 
 #ifdef CINDER_MSW
+	wasPlaying = true;
 	mBackingVideo.play();
 #endif
 }
@@ -89,6 +97,7 @@ void VideoNative::pause() {
 #endif
 
 #ifdef CINDER_MSW
+	wasPlaying = false;
 	mBackingVideo.pause();
 #endif
 }
@@ -100,6 +109,7 @@ void VideoNative::stop() {
 #endif
 
 #ifdef CINDER_MSW
+	wasPlaying = false;
 	mBackingVideo.stop();
 #endif
 }
@@ -122,7 +132,7 @@ void VideoNative::setLoopEnabled(bool enabled) {
 #endif
 
 #ifdef CINDER_MSW
-// mBackingVideo.setLoop(enabled); // currently broken, do it manually
+// mBackingVideo.setLoop(enabled); // currently broken? do it manually
 #endif
 
 		mLoopEnabled = enabled;

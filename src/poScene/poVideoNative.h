@@ -62,9 +62,9 @@ public:
 	void play();
 	void pause();
 	void stop();
-	
+
 	bool isPlaying();
-	
+
 	void setPlayheadPosition(float value);
 	void setLoopEnabled(bool enabled);
 	float getDuration();
@@ -80,6 +80,9 @@ private:
 	bool mLoopEnabled;
 #ifdef CINDER_MSW
 	ciWMFVideoPlayer mBackingVideo;
+	bool wasPlaying = false;
+	float lastFrameTime = 0;
+
 #endif
 
 #ifdef CINDER_MAC
