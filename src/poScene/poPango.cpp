@@ -1,3 +1,4 @@
+#include "cinder/Log.h"
 #include "poPango.h"
 
 namespace po {
@@ -44,7 +45,7 @@ void Pango::draw() {
 
 	if (mPango->getTexture()) {
 		ci::gl::ScopedBlendPremult scopedBlend;
-		ci::gl::ScopedColor scopedColor(ci::ColorA(getFillColor(), getAppliedAlpha()));
+		ci::gl::ScopedColor scopedColor(ci::ColorA(getFillColor() * getAppliedAlpha(), 1.0));
 		ci::gl::draw(mPango->getTexture());
 	}
 }
