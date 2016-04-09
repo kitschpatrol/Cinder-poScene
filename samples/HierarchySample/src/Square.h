@@ -8,9 +8,7 @@ using namespace po::scene;
 class Square;
 typedef std::shared_ptr<Square> SquareRef;
 
-class Square
-: public po::scene::NodeContainer
-{
+class Square : public po::scene::NodeContainer {
 public:
 	static SquareRef create(int size);
 	virtual ~Square();
@@ -23,37 +21,36 @@ protected:
 private:
 	//	Size of the square
 	int mSize;
-	
+
 	//	Square shape
 	ShapeRef mShape;
-	
+
 	//	Shape color and highlight color
 	ci::Color mColor;
 	ci::Color mHighlightColor;
 	ci::Color mBoundsColor;
-	
+
 	//	Keep track on pressed for dragging
 	bool mIsPressed;
-	
+
 	//	Keep track of the initial, start and end position to use for dragging
 	ci::vec2 mStartPos, mEndPos, mInitialPos;
-	
+
 	//	Mouse down event handler
 	void onMouseDown(MouseEvent &event);
-	
+
 	//	Mouse dragged event handler
 	void onMouseDragged(MouseEvent &event);
-	
+
 	//	Mouse up event handler
 	void onMouseUp(MouseEvent &event);
-	
+
 	//	Highlight the square
 	void highlight(bool isHighlighted);
-	
+
 	//	Highlight child nodes
 	void highlightChildren(bool isHighlighted);
-	
+
 	//	Highlight the parent node
 	void highlightParent();
- 
 };

@@ -9,32 +9,27 @@ using namespace ci::app;
 using namespace std;
 using namespace po::scene;
 
-class MouseEventsSampleApp
-: public App
-{
-  public:
+class MouseEventsSampleApp : public App {
+public:
 	void setup();
 	void update();
 	void draw();
-    
-    SceneRef scene;
+
+	SceneRef scene;
 };
 
-void MouseEventsSampleApp::setup()
-{
-    scene = Scene::create(MouseEventsSample::create());
+void MouseEventsSampleApp::setup() {
+	scene = Scene::create(MouseEventsSample::create());
 }
 
-void MouseEventsSampleApp::update()
-{
-    scene->update();
+void MouseEventsSampleApp::update() {
+	scene->update();
 }
 
-void MouseEventsSampleApp::draw()
-{
+void MouseEventsSampleApp::draw() {
 	// clear out the window with black
-	gl::clear( Color( 0, 0, 0 ) );
-    scene->draw();
+	gl::clear(Color(0, 0, 0));
+	scene->draw();
 }
 
-CINDER_APP( MouseEventsSampleApp, RendererGl )
+CINDER_APP(MouseEventsSampleApp, RendererGl)

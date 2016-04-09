@@ -9,32 +9,27 @@ using namespace ci::app;
 using namespace std;
 using namespace po::scene;
 
-class AlignmentSampleApp
-: public App
-{
-  public:
+class AlignmentSampleApp : public App {
+public:
 	void setup();
 	void update();
 	void draw();
-    
-    SceneRef scene;
+
+	SceneRef scene;
 };
 
-void AlignmentSampleApp::setup()
-{
-    scene = Scene::create(AlignmentSample::create());
+void AlignmentSampleApp::setup() {
+	scene = Scene::create(AlignmentSample::create());
 }
 
-void AlignmentSampleApp::update()
-{
-    scene->update();
+void AlignmentSampleApp::update() {
+	scene->update();
 }
 
-void AlignmentSampleApp::draw()
-{
+void AlignmentSampleApp::draw() {
 	// clear out the window with black
-	gl::clear( Color( 0, 0, 0 ) );
-    scene->draw();
+	gl::clear(Color(0, 0, 0));
+	scene->draw();
 }
 
-CINDER_APP( AlignmentSampleApp, RendererGl )
+CINDER_APP(AlignmentSampleApp, RendererGl)

@@ -56,7 +56,7 @@ void Image::draw() {
 
 ci::Rectf Image::getBounds() {
 	if (mTexture) {
-		return mTexture->getBounds();
+	return mTexture->getBounds();
 	} else {
 		return ci::Rectf::zero();
 	}

@@ -10,32 +10,27 @@ using namespace ci::app;
 using namespace std;
 using namespace po::scene;
 
-class AnimationSampleApp
-: public App
-{
-  public:
+class AnimationSampleApp : public App {
+public:
 	void setup();
 	void update();
 	void draw();
-    
-    SceneRef scene;
+
+	SceneRef scene;
 };
 
-void AnimationSampleApp::setup()
-{
-    scene = Scene::create(AnimationSample::create());
+void AnimationSampleApp::setup() {
+	scene = Scene::create(AnimationSample::create());
 }
 
-void AnimationSampleApp::update()
-{
-    scene->update();
+void AnimationSampleApp::update() {
+	scene->update();
 }
 
-void AnimationSampleApp::draw()
-{
+void AnimationSampleApp::draw() {
 	// clear out the window with black
-	gl::clear( Color( 0, 0, 0 ) );
-    scene->draw();
+	gl::clear(Color(0, 0, 0));
+	scene->draw();
 }
 
-CINDER_APP( AnimationSampleApp, RendererGl )
+CINDER_APP(AnimationSampleApp, RendererGl)

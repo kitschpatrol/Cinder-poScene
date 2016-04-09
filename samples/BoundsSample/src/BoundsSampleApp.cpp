@@ -10,34 +10,29 @@ using namespace ci::app;
 using namespace std;
 using namespace po::scene;
 
-class BoundsSampleApp
-: public App
-{
-  public:
+class BoundsSampleApp : public App {
+public:
 	void setup();
 	void update();
 	void draw();
-    
-    SceneRef scene;
+
+	SceneRef scene;
 };
 
-void BoundsSampleApp::setup()
-{
-    setWindowSize(800, 600);
-    //ci::gl::enableAlphaBlending();
-    scene = Scene::create(BoundsSample::create());
+void BoundsSampleApp::setup() {
+	setWindowSize(800, 600);
+	// ci::gl::enableAlphaBlending();
+	scene = Scene::create(BoundsSample::create());
 }
 
-void BoundsSampleApp::update()
-{
-    scene->update();
+void BoundsSampleApp::update() {
+	scene->update();
 }
 
-void BoundsSampleApp::draw()
-{
+void BoundsSampleApp::draw() {
 	// clear out the window with black
-	gl::clear( Color( 0.0, 0.0f, 0.0 ) );
-    scene->draw();
+	gl::clear(Color(0.0, 0.0f, 0.0));
+	scene->draw();
 }
 
-CINDER_APP( BoundsSampleApp, RendererGl )
+CINDER_APP(BoundsSampleApp, RendererGl)

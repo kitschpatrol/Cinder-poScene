@@ -9,33 +9,28 @@ using namespace ci::app;
 using namespace std;
 using namespace po::scene;
 
-class MaskingSampleApp
-: public App
-{
-  public:
+class MaskingSampleApp : public App {
+public:
 	void setup();
 	void update();
 	void draw();
-    
-    SceneRef scene;
+
+	SceneRef scene;
 };
 
-void MaskingSampleApp::setup()
-{
+void MaskingSampleApp::setup() {
 	setWindowSize(683, 1024);
-    scene = Scene::create(MaskingSample::create());
+	scene = Scene::create(MaskingSample::create());
 }
 
-void MaskingSampleApp::update()
-{
-    scene->update();
+void MaskingSampleApp::update() {
+	scene->update();
 }
 
-void MaskingSampleApp::draw()
-{
+void MaskingSampleApp::draw() {
 	// clear out the window with black
-	gl::clear( Color( 1, 0, 0 ) );
-    scene->draw();
+	gl::clear(Color(1, 0, 0));
+	scene->draw();
 }
 
-CINDER_APP( MaskingSampleApp, RendererGl )
+CINDER_APP(MaskingSampleApp, RendererGl)

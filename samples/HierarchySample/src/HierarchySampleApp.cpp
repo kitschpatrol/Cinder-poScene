@@ -9,32 +9,27 @@ using namespace ci::app;
 using namespace std;
 using namespace po::scene;
 
-class HierarchySampleApp
-: public App
-{
-  public:
+class HierarchySampleApp : public App {
+public:
 	void setup();
 	void update();
 	void draw();
-    
-    SceneRef scene;
+
+	SceneRef scene;
 };
 
-void HierarchySampleApp::setup()
-{
-    scene = Scene::create(HierarchySample::create());
+void HierarchySampleApp::setup() {
+	scene = Scene::create(HierarchySample::create());
 }
 
-void HierarchySampleApp::update()
-{
-    scene->update();
+void HierarchySampleApp::update() {
+	scene->update();
 }
 
-void HierarchySampleApp::draw()
-{
+void HierarchySampleApp::draw() {
 	// clear out the window with black
-	gl::clear( Color( 0, 0, 0 ) );
-    scene->draw();
+	gl::clear(Color(0, 0, 0));
+	scene->draw();
 }
 
-CINDER_APP( HierarchySampleApp, RendererGl )
+CINDER_APP(HierarchySampleApp, RendererGl)

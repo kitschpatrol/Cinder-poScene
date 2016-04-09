@@ -32,6 +32,7 @@
 
 #include "cinder/gl/gl.h"
 #include "poNode.h"
+
 namespace po {
 namespace scene {
 // Images are simple wrappers that draw a ci::gl::Texture to a
