@@ -45,12 +45,7 @@ SceneRef Scene::create(NodeContainerRef rootNode) {
 	return scene;
 }
 
-Scene::Scene(NodeContainerRef rootNode)
-		: mRootNode(rootNode)
-		, mAutoCam(true)
-		, eventCenter(EventCenter::create())
-		, mFbo(nullptr)
-		, mMaskFbo(nullptr) {
+Scene::Scene(NodeContainerRef rootNode) : mRootNode(rootNode), mAutoCam(true), eventCenter(EventCenter::create()), mFbo(nullptr), mMaskFbo(nullptr) {
 	createFbos();
 	ci::app::getWindow()->getSignalResize().connect(std::bind(&Scene::createFbos, this));
 }
@@ -155,8 +150,12 @@ void Scene::createFbos() {
 	format.setSamples(1);
 	format.enableDepthBuffer(false);
 
-	mFbo = ci::gl::Fbo::create(ci::app::getWindowWidth(), ci::app::getWindowHeight(), format);
-	mMaskFbo = ci::gl::Fbo::create(ci::app::getWindowWidth(), ci::app::getWindowHeight(), format);
+	// Force to at least 1x1 to prevent crashes on Windows...
+	const int windowWidth = std::max(ci::app::getWindowWidth(), 1);
+	const int windowHeight = std::max(ci::app::getWindowHeight(), 1);
+
+	mFbo = ci::gl::Fbo::create(windowWidth, windowHeight, format);
+	mMaskFbo = ci::gl::Fbo::create(windowWidth, windowHeight, format);
 
 	//        mFbo->getT
 	//        mFbo->getColorTexture().setFlipped(true);
