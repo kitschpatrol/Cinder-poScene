@@ -3,32 +3,30 @@
 #include "poNodeContainer.h"
 #include "poShape.h"
 
-
 class PlayerButton;
 typedef std::shared_ptr<PlayerButton> PlayerButtonRef;
 
-class PlayerButton
-: public po::scene::NodeContainer
-{
+class PlayerButton : public po::scene::NodeContainer {
 public:
-    typedef boost::signals2::signal<void()> ButtonSignal;
-    
-    static PlayerButtonRef  create(po::scene::ShapeRef shape);
-    void                    setup(po::scene::ShapeRef shape);
-    ButtonSignal            &getButtonSignal() { return mButtonSignal; };
+	typedef boost::signals2::signal<void()> ButtonSignal;
+
+	static PlayerButtonRef create(po::scene::ShapeRef shape);
+	void setup(po::scene::ShapeRef shape);
+	ButtonSignal &getButtonSignal() {
+		return mButtonSignal;
+	};
 
 protected:
-    PlayerButton();
-    
+	PlayerButton();
+
 private:
-    bool                mIsPressed;
-    std::string         mName;
-    po::scene::ShapeRef mShape;
-    
-    void                onMouseEvent(po::scene::MouseEvent &event);
-    void                doAction();
-    
-    ButtonSignal        mButtonSignal;
-    ci::vec2            mPressPosition;
-    
+	bool mIsPressed;
+	std::string mName;
+	po::scene::ShapeRef mShape;
+
+	void onMouseEvent(po::scene::MouseEvent &event);
+	void doAction();
+
+	ButtonSignal mButtonSignal;
+	ci::vec2 mPressPosition;
 };

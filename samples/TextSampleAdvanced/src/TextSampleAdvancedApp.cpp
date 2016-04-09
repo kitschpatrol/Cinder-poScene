@@ -10,32 +10,27 @@ using namespace ci::app;
 using namespace std;
 using namespace po::scene;
 
-class TextSampleAdvancedApp
-: public App 
-{
-  public:
+class TextSampleAdvancedApp : public App {
+public:
 	void setup();
 	void update();
 	void draw();
-    
-    SceneRef scene;
+
+	SceneRef scene;
 };
 
-void TextSampleAdvancedApp::setup()
-{
-    scene = Scene::create(TextSampleAdvanced::create());
+void TextSampleAdvancedApp::setup() {
+	scene = Scene::create(TextSampleAdvanced::create());
 }
 
-void TextSampleAdvancedApp::update()
-{
-    scene->update();
+void TextSampleAdvancedApp::update() {
+	scene->update();
 }
 
-void TextSampleAdvancedApp::draw()
-{
+void TextSampleAdvancedApp::draw() {
 	// clear out the window with black
-	gl::clear( Color( 0, 0, 0 ) );
-    scene->draw();
+	gl::clear(Color(0, 0, 0));
+	scene->draw();
 }
 
-CINDER_APP( TextSampleAdvancedApp, RendererGl )
+CINDER_APP(TextSampleAdvancedApp, RendererGl)

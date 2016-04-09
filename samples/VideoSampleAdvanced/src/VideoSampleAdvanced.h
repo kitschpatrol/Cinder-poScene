@@ -9,29 +9,26 @@
 class VideoSampleAdvanced;
 typedef std::shared_ptr<VideoSampleAdvanced> VideoSampleAdvancedRef;
 
-class VideoSampleAdvanced
-: public po::scene::NodeContainer
-{
+class VideoSampleAdvanced : public po::scene::NodeContainer {
 public:
-    static VideoSampleAdvancedRef create();
-    
-    void setup();
-    
+	static VideoSampleAdvancedRef create();
+
+	void setup();
+
 protected:
-    VideoSampleAdvanced();
-    
+	VideoSampleAdvanced();
+
 private:
-    
-    PlayerControllerRef     mPlayer;
-    MovieThumbRef           mMovies[3];
-    
-    const int               mNumMovies;
-    void                    setUpMovies();
-    void                    onThumbnailClick(po::scene::MouseEvent &event);
-    void                    onAnimationComplete(MovieThumbRef thumbnail);
-    void                    animateControllerToPos(MovieThumbRef movie);
-    
-    ci::vec2                mPrimaryDisplayerPosition;
-    
-    bool                    mIsControllerInPosition;
+	PlayerControllerRef mPlayer;
+	MovieThumbRef mMovies[3];
+
+	const int mNumMovies;
+	void setUpMovies();
+	void onThumbnailClick(po::scene::MouseEvent &event);
+	void onAnimationComplete(MovieThumbRef thumbnail);
+	void animateControllerToPos(MovieThumbRef movie);
+
+	ci::vec2 mPrimaryDisplayerPosition;
+
+	bool mIsControllerInPosition;
 };

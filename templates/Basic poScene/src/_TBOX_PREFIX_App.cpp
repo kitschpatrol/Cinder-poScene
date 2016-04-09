@@ -9,32 +9,27 @@ using namespace ci::app;
 using namespace std;
 using namespace po::scene;
 
-class _TBOX_PREFIX_App
-: public AppNative 
-{
-  public:
+class _TBOX_PREFIX_App : public AppNative {
+public:
 	void setup();
 	void update();
 	void draw();
-    
-    SceneRef scene;
+
+	SceneRef scene;
 };
 
-void _TBOX_PREFIX_App::setup()
-{
-    scene = Scene::create(_TBOX_PREFIX_::create());
+void _TBOX_PREFIX_App::setup() {
+	scene = Scene::create(_TBOX_PREFIX_::create());
 }
 
-void _TBOX_PREFIX_App::update()
-{
-    scene->update();
+void _TBOX_PREFIX_App::update() {
+	scene->update();
 }
 
-void _TBOX_PREFIX_App::draw()
-{
+void _TBOX_PREFIX_App::draw() {
 	// clear out the window with black
-	gl::clear( Color( 0, 0, 0 ) );
-    scene->draw();
+	gl::clear(Color(0, 0, 0));
+	scene->draw();
 }
 
-CINDER_APP_NATIVE( _TBOX_PREFIX_App, RendererGl )
+CINDER_APP_NATIVE(_TBOX_PREFIX_App, RendererGl)

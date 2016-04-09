@@ -10,32 +10,27 @@ using namespace ci::app;
 using namespace std;
 using namespace po::scene;
 
-class TextSampleApp
-: public App
-{
-  public:
+class TextSampleApp : public App {
+public:
 	void setup();
 	void update();
 	void draw();
-    
-    SceneRef scene;
+
+	SceneRef scene;
 };
 
-void TextSampleApp::setup()
-{
-    scene = Scene::create(TextSample::create());
+void TextSampleApp::setup() {
+	scene = Scene::create(TextSample::create());
 }
 
-void TextSampleApp::update()
-{
-    scene->update();
+void TextSampleApp::update() {
+	scene->update();
 }
 
-void TextSampleApp::draw()
-{
+void TextSampleApp::draw() {
 	// clear out the window with black
-	gl::clear( Color( 0, 0, 0 ) );
-    scene->draw();
+	gl::clear(Color(0, 0, 0));
+	scene->draw();
 }
 
-CINDER_APP( TextSampleApp, RendererGl )
+CINDER_APP(TextSampleApp, RendererGl)

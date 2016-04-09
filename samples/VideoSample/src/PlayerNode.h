@@ -10,20 +10,19 @@
 class PlayerNode;
 typedef std::shared_ptr<PlayerNode> PlayerNodeRef;
 
-class PlayerNode
-: public po::scene::NodeContainer {
-    
+class PlayerNode : public po::scene::NodeContainer {
+
 public:
-    static PlayerNodeRef    create();
-    void                    setup();
-    
+	static PlayerNodeRef create();
+	void setup();
+
 protected:
-    PlayerNode();
-    //  override virtual function from NodeContainer
-    void                    update();
-    
+	PlayerNode();
+	//  override virtual function from NodeContainer
+	void update();
+
 private:
-    po::scene::VideoGlRef   mVideoDisplayer;
-    void                    clickVideo();
+	po::scene::VideoGlRef mVideoDisplayer;
+	void clickVideo();
 	ci::gl::Texture2dRef mTexture;
 };

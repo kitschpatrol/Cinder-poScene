@@ -9,29 +9,26 @@ using namespace po::scene;
 class Indicator;
 typedef std::shared_ptr<Indicator> IndicatorRef;
 
-class Indicator
-: public po::scene::NodeContainer
-{
+class Indicator : public po::scene::NodeContainer {
 public:
-    static IndicatorRef create(std::string name, ci::Color color);
-    virtual ~Indicator();
-    
-    virtual void setup(std::string name, ci::Color color);
-    
-    //	Show highlight
-    void showHighlighted();
-    
+	static IndicatorRef create(std::string name, ci::Color color);
+	virtual ~Indicator();
+
+	virtual void setup(std::string name, ci::Color color);
+
+	//	Show highlight
+	void showHighlighted();
+
 protected:
-    Indicator();
-    
+	Indicator();
+
 private:
-    //	Text box with event name
-    TextBoxRef mTextBox;
-    
-    //	Highlight shape
-    ShapeRef mHighlight;
-    
-    //	Highlight color
-    ci::Color mColor;
-    
+	//	Text box with event name
+	TextBoxRef mTextBox;
+
+	//	Highlight shape
+	ShapeRef mHighlight;
+
+	//	Highlight color
+	ci::Color mColor;
 };
