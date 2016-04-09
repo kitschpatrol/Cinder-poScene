@@ -30,9 +30,9 @@
 
 #pragma once
 
-#include "poNodeContainer.h"
-#include "poEventCenter.h"
 #include "cinder/Camera.h"
+#include "poEventCenter.h"
+#include "poNodeContainer.h"
 
 namespace po {
 namespace scene {
@@ -98,6 +98,8 @@ public:
 	//! Get the root Node
 	void setRootNode(NodeContainerRef node);
 
+	NodeRef getNodeUnderPoint(ci::vec2 point);
+
 protected:
 	Scene(NodeContainerRef rootNode);
 
@@ -145,5 +147,6 @@ private:
 	ci::gl::FboRef mFbo;
 	ci::gl::FboRef mMaskFbo;
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

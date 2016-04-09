@@ -26,7 +26,7 @@
  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 
 #define GLSL(src) "#version 110\n" #src
 
@@ -42,46 +42,88 @@
 #include <OpenGL/gl.h>
 #endif
 
-#include "cinder/CinderMath.h"
 #include "Resources.h"
+#include "cinder/CinderMath.h"
+#include "cinder/Utilities.h"
 #include "poNode.h"
 #include "poNodeContainer.h"
-#include "poShape.h"
 #include "poScene.h"
+#include "poShape.h"
 
 namespace po {
 namespace scene {
 
 static uint32_t OBJECT_UID = 0;
-static const int ORIGIN_SIZE = 2;
+static const int ORIGIN_SIZE = 8;
 
 // Masking Shader
 static ci::gl::GlslProgRef mMaskShader = nullptr;
 
-static const char *maskVertShader = CI_GLSL(150, uniform mat4 ciModelViewProjection; in vec4 ciPosition; in vec2 ciTexCoord0; out highp vec2 TexCoord;
-
-																						void main() {
-																							TexCoord = ciTexCoord0.st;
-																							gl_Position = ciModelViewProjection * ciPosition;
+static const char *maskVertShader = CI_GLSL(150,
+																						uniform mat4 ciModelViewProjection;									//
+																						in vec4 ciPosition;																	//
+																						in vec2 ciTexCoord0;																//
+																						out highp vec2 TexCoord;														//
+																																																//
+																						void main() {																				//
+																							TexCoord = ciTexCoord0.st;												//
+																							gl_Position = ciModelViewProjection * ciPosition; //
 																						});
 
-static const char *maskFragShader = CI_GLSL(150, in highp vec2 TexCoord;
-
-																						uniform sampler2D tex; uniform sampler2D mask;
-
-																						out vec4 color;
-
-																						void main(void) {
-																							vec2 c0 = vec2(TexCoord.s, TexCoord.t);
-
-																							vec4 rgbValue = texture(tex, c0);
-																							vec4 alphaValue = texture(mask, c0);
-
-																							color.rgb = rgbValue.rgb;
-																							color.a = alphaValue.a * rgbValue.a;
+static const char *maskFragShader = CI_GLSL(150,
+																						in highp vec2 TexCoord;										//
+																						uniform sampler2D tex;										//
+																						uniform sampler2D mask;										//
+																						out vec4 color;														//
+																																											//
+																						void main(void) {													//
+																							vec2 c0 = vec2(TexCoord.s, TexCoord.t); //
+																							vec4 rgbValue = texture(tex, c0);				//
+																							vec4 alphaValue = texture(mask, c0);		//
+																							color.rgb = rgbValue.rgb;								//
+																							color.a = alphaValue.a * rgbValue.a;		//
 																						});
 
-Node::Node(std::string name) : mUid(OBJECT_UID++), mName(name), mDrawOrder(0), mPosition(0.f, 0.f), mScale(1.f, 1.f), mRotation(0), mOffset(0.f, 0.f), mAlpha(1.f), mAppliedAlpha(1.f), mPositionAnim(ci::vec2(0.f, 0.f)), mScaleAnim(ci::vec2(1.f, 1.f)), mRotationAnim(0), mOffsetAnim(ci::vec2(0.f, 0.f)), mAlphaAnim(1.f), mAlignment(Alignment::TOP_LEFT), mMatrixOrder(MatrixOrder::TRS), mFillColor(1.f, 1.f, 1.f), mFillColorAnim(ci::Color(1.f, 1.f, 1.f)), mFillEnabled(true), mStrokeColor(255, 255, 255), mStrokeEnabled(false), mPixelSnapping(false), mUpdatePositionFromAnim(false), mUpdateScaleFromAnim(false), mUpdateRotationFromAnim(false), mUpdateOffsetFromAnim(false), mUpdateAlphaFromAnim(false), mUpdateFillColorFromAnim(false), mDrawBounds(false), mBoundsColor(1.f, 0, 0), mParentShouldIgnoreInBounds(false), mBoundsDirty(true), mFrameDirty(true), mVisible(true), mInteractionEnabled(true), mHasScene(false), mHasParent(false), mIsMasked(false), mMask(nullptr) {
+Node::Node(std::string name)
+		: mUid(OBJECT_UID++)
+		, mName("Node " + ci::toString(OBJECT_UID) + " @ " + ci::toString(this)) // Default to something semi-sensible
+		, mDrawOrder(0)
+		, mPosition(0.f, 0.f)
+		, mScale(1.f, 1.f)
+		, mRotation(0)
+		, mOffset(0.f, 0.f)
+		, mAlpha(1.f)
+		, mAppliedAlpha(1.f)
+		, mPositionAnim(ci::vec2(0.f, 0.f))
+		, mScaleAnim(ci::vec2(1.f, 1.f))
+		, mRotationAnim(0)
+		, mOffsetAnim(ci::vec2(0.f, 0.f))
+		, mAlphaAnim(1.f)
+		, mAlignment(Alignment::TOP_LEFT)
+		, mMatrixOrder(MatrixOrder::TRS)
+		, mFillColor(1.f, 1.f, 1.f)
+		, mFillColorAnim(ci::Color(1.f, 1.f, 1.f))
+		, mFillEnabled(true)
+		, mStrokeColor(255, 255, 255)
+		, mStrokeEnabled(false)
+		, mPixelSnapping(false)
+		, mUpdatePositionFromAnim(false)
+		, mUpdateScaleFromAnim(false)
+		, mUpdateRotationFromAnim(false)
+		, mUpdateOffsetFromAnim(false)
+		, mUpdateAlphaFromAnim(false)
+		, mUpdateFillColorFromAnim(false)
+		, mDrawBounds(false)
+		, mBoundsColor(1.f, 0, 0)
+		, mParentShouldIgnoreInBounds(false)
+		, mBoundsDirty(true)
+		, mFrameDirty(true)
+		, mVisible(true)
+		, mInteractionEnabled(true)
+		, mHasScene(false)
+		, mHasParent(false)
+		, mIsMasked(false)
+		, mMask(nullptr) {
 	//	Initialize our animations
 	initAttrAnimations();
 }
@@ -126,7 +168,6 @@ void Node::beginDrawTree() {
 
 void Node::drawTree() {
 	if (mVisible) {
-
 		//  Draw
 		beginDrawTree();
 
@@ -143,8 +184,9 @@ void Node::drawTree() {
 
 void Node::finishDrawTree() {
 	//	Draw bounds if necessary
-	if (mDrawBounds)
+	if (mDrawBounds) {
 		drawBounds();
+	}
 
 	//	Pop our Matrix
 	ci::gl::popModelView();
@@ -162,7 +204,6 @@ void Node::matrixTree() {
 void Node::captureMasked() {
 	//	Save the window buffer
 	{
-
 		//  Draw ourself into FBO
 		ci::gl::ScopedFramebuffer buffer(getScene()->getWindowFbo());
 		ci::gl::clear(ci::ColorA(1.0f, 1.0f, 1.0f, 0.0f));
@@ -180,22 +221,26 @@ void Node::captureMasked() {
 	}
 }
 
-void Node::drawMasked() {
-	ci::gl::enableAlphaBlending();
+void Node::drawMasked(bool useWindowMatrix) {
+	ci::gl::ScopedBlendAlpha scopedBlend;
 
 	ci::gl::pushModelView();
-	ci::gl::setMatricesWindow(ci::app::getWindowSize());
+
+	if (useWindowMatrix) {
+		ci::gl::setMatricesWindow(ci::app::getWindowSize());
+	}
 
 	// Bind FBO textures
 	ci::gl::ScopedTextureBind fboBind(getScene()->getWindowFbo()->getColorTexture(), 0);
 	ci::gl::ScopedTextureBind maskBind(getScene()->getMaskFbo()->getColorTexture(), 1);
 
-	//	Bind Shader
-	ci::gl::ScopedGlslProg maskShader(mMaskShader);
-
 	//	Set uniforms
 	mMaskShader->uniform("tex", 0);
 	mMaskShader->uniform("mask", 1);
+
+	// Bind shader
+	// See https://github.com/cinder/Cinder/issues/836
+	ci::gl::ScopedGlslProg shaderScp(mMaskShader);
 
 	//	Draw
 	ci::gl::drawSolidRect(getScene()->getWindowFbo()->getBounds());
@@ -241,18 +286,22 @@ NodeRef Node::removeMask() {
 //	Texture Caching
 //------------------------------------
 
-ci::gl::TextureRef Node::createTexture() {
+ci::gl::TextureRef Node::createTexture(bool drawMaskedEnabled) {
+	// Set default FBO format
+	ci::gl::Fbo::Format fboFormat;
+	fboFormat.setSamples(1);
+	fboFormat.enableDepthBuffer(false);
+
+	return createTexture(drawMaskedEnabled, fboFormat);
+}
+
+ci::gl::TextureRef Node::createTexture(bool drawMaskedEnabled, ci::gl::Fbo::Format fboFormat) {
 	//	We have to be visible, so if we aren't temporarily turn it on
 	bool visible = mVisible;
 	setVisible(true);
 
 	// Create an FBO to draw into
-	ci::gl::Fbo::Format format;
-	format.setSamples(1);
-	format.enableDepthBuffer(false);
-
-	//	Create and Bind the FBO
-	ci::gl::FboRef fbo = ci::gl::Fbo::create(getWidth(), getHeight(), format);
+	ci::gl::FboRef fbo = ci::gl::Fbo::create(getWidth(), getHeight(), fboFormat);
 	ci::gl::ScopedFramebuffer fboBind(fbo);
 
 	//	Set the viewport
@@ -260,13 +309,18 @@ ci::gl::TextureRef Node::createTexture() {
 
 	//	Set Ortho camera to fbo bounds, save matrices and push camera
 	ci::gl::pushMatrices();
+
 	ci::gl::setMatricesWindow(fbo->getWidth(), fbo->getHeight());
 
 	//	Clear the FBO
 	ci::gl::clear(ci::ColorA(1.f, 1.f, 1.f, 0.f));
 
 	//	Draw into the FBO
-	draw();
+	if (drawMaskedEnabled) {
+		drawMasked(false);
+	} else {
+		draw();
+	}
 
 	//	Set the camera up for the window
 	ci::gl::popMatrices();
@@ -342,6 +396,22 @@ Node &Node::setFillColor(ci::Color color) {
 	mFillColor = color;
 	mFillColorAnim = mFillColor;
 	return *this;
+}
+
+Node &Node::setOffsetNormalized(ci::vec2 offset) {
+	return setOffsetNormalized(offset.x, offset.y);
+}
+
+Node &Node::setOffsetNormalized(float x, float y) {
+	return setOffset(x * getWidth(), y * getHeight());
+}
+
+ci::vec2 Node::getOffsetNormalized() {
+	if (getWidth() == 0 || getHeight() == 0) {
+		return ci::vec2(0);
+	} else {
+		return ci::vec2(mOffset.x / getWidth(), mOffset.y / getHeight());
+	}
 }
 
 //
@@ -592,6 +662,23 @@ NodeContainerRef Node::getParent() const {
 	return mParent.lock();
 }
 
+bool Node::hasSiblings() {
+	return hasParent() && (getParent()->getNumChildren() > 1);
+}
+
+std::deque<NodeRef> Node::getSiblings() {
+	std::deque<NodeRef> siblings;
+
+	if (hasSiblings()) {
+		for (auto &sibling : getParent()->getChildrenByReference()) {
+			if (sibling.get() != this) {
+				siblings.push_back(sibling);
+			}
+		}
+	}
+	return siblings;
+}
+
 bool Node::hasParent() {
 	return mHasParent;
 }
@@ -599,6 +686,21 @@ bool Node::hasParent() {
 void Node::removeParent() {
 	mParent.reset();
 	mHasParent = false;
+}
+
+bool Node::getIsSelectedByDebugger() {
+	return mIsSelectedByDebugger;
+}
+
+void Node::setIsSelectedByDebugger(bool selected) {
+	if (mIsSelectedByDebugger != selected) {
+		mIsSelectedByDebugger = selected;
+		mSignalSelectionByDebuggerChanged.emit();
+	}
+}
+
+ci::signals::Signal<void()> *Node::getSignalSelectionByDebuggerChanged() {
+	return &mSignalSelectionByDebuggerChanged;
 }
 
 //------------------------------------
@@ -612,7 +714,7 @@ ci::Rectf Node::getBounds() {
 }
 
 void Node::drawBounds() {
-	ci::gl::color(mBoundsColor);
+	ci::gl::ScopedColor scopedColor(mBoundsColor);
 
 	//	Draw bounding box
 	ci::gl::drawStrokedRect(getBounds());
@@ -653,7 +755,6 @@ bool Node::isEligibleForInteractionEvents() {
 	if (!hasScene() || !isInteractionEnabled() || !isVisible() || mScale.x == 0.0f || mScale.y == 0.0f) {
 		return false;
 	}
-
 	return true;
 }
 
@@ -700,5 +801,6 @@ bool Node::isEligibleForInteractionEvent(const TouchEvent::Type &type) {
 	}
 	return false;
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

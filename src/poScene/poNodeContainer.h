@@ -37,7 +37,7 @@ namespace scene {
 // NodeContainers are groups of Nodes. They do not render anything themselves,
 // but they should render all of their children, allow for grouped alpha,
 // and be hit testable. Hit testing on a Node Container is true if any of it's
-// children return true to a pointInside query.
+// children return  true to a pointInside query.
 //
 // Node containers can also be use to generate a texture from a complex layout,
 // hide/show collections of objects, enable/disable interaction on a group level,
@@ -84,6 +84,10 @@ public:
 	int getNumChildren() {
 		return mChildren.size();
 	};
+
+	//! Get all this NodeContainer's children and its children's children
+	std::deque<NodeRef> getChildrenRecursive();
+
 	//! Get all this NodeContainer's children
 	std::deque<NodeRef> getChildren();
 	//! Get a reference to all of this NodeContainer's children
@@ -150,6 +154,9 @@ protected:
 	void removeScene();
 
 private:
+	// helper to get recursive children
+	std::deque<NodeRef> getChildrenRecursive(std::deque<NodeRef> &recursiveChildren);
+
 	//  Set the parent to this container and the scene to this container's scene
 	void setParentAndScene(NodeRef node);
 
@@ -171,5 +178,6 @@ private:
 class NodeContainerException : public ci::Exception {};
 
 class NodeContainerInvalidChildException : public NodeContainerException {};
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

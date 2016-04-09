@@ -28,20 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "cinder/Area.h"
 #include "poMatrixSet.h"
-
-#if defined(CINDER_MSW)
-#include <windows.h>
-#undef min
-#undef max
-#include <gl/gl.h>
-#elif defined(CINDER_COCOA_TOUCH)
-#include <OpenGLES/ES1/gl.h>
-#include <OpenGLES/ES1/glext.h>
-#elif defined(CINDER_MAC)
-#include <OpenGL/gl.h>
-#endif
 
 namespace po {
 namespace scene {
@@ -49,12 +36,14 @@ namespace scene {
 void MatrixSet::set(glm::mat4x4 modelview, glm::mat4x4 projection, ci::Area viewport) {
 	mModelview = modelview;
 	mProjection = projection;
-	mViewport = viewport;
+	mViewport = glm::vec4(viewport.getX1(), viewport.getY1(), viewport.getX2(), viewport.getY2());
 }
 
 ci::vec2 MatrixSet::globalToLocal(const ci::vec2 &point) {
-	ci::vec3 p(point.x, mViewport.getHeight() - point.y, 0.f);
-	ci::vec3 r = unproject(p);
+	// Flip Y ?
+	ci::vec3 p(point.x, (mViewport.w - mViewport.y) - point.y, 0.f); // hmm no longer needed?
+	// ci::vec3 p(point.x, point.y, 0.0);
+	ci::vec3 r = unProject(p);
 	return ci::vec2(r.x, r.y);
 }
 
@@ -62,53 +51,16 @@ ci::vec2 MatrixSet::localToGlobal(const ci::vec2 &point) {
 	glm::mat4x4 a = mProjection * mModelview;
 	a = glm::inverse(a);
 	ci::vec3 p = project(ci::vec3(point.x, point.y, 0.f));
-	return ci::vec2(p.x, p.y);
+	return ci::vec2(p.x, (mViewport.w - mViewport.y) - p.y); // hmm does flipping this help?
 }
 
-//
-//	Reimplementation of glm::Project
-//	Based on original function at https://github.com/g-truc/glm/blob/0.9.5/glm/gtc/matrix_transform.inl
-//
 ci::vec3 MatrixSet::project(const ci::vec3 &pt) {
-	glm::vec4 p(pt.x, pt.y, 0, 1.f);
-	p = mModelview * p;
-	p = mProjection * p;
-	p /= p.w;
-
-	p = p * glm::vec4(0.5, 0.5, 0.5, 0.5) + glm::vec4(0.5, 0.5f, 0.f, 1.f);
-	p.x = p.x * mViewport.getWidth();
-	p.y = mViewport.getHeight() - (p.y * mViewport.getHeight());
-
-	return ci::vec3(p.x, p.y, p.z);
+	return glm::project(pt, mModelview, mProjection, mViewport);
 }
 
-//
-//	Adapted from code by Paul Houx https://forum.libcinder.org/topic/glu-s-gluunproject-substitute
-//
-ci::vec3 MatrixSet::unproject(const ci::vec3 &pt) {
-	//	find the inverse modelview-projection-matrix
-	glm::mat4x4 a = mProjection * mModelview;
-	a = glm::inverse(a);
-
-	//	transform to normalized coordinates in the range [-1, 1]
-	glm::vec4 in;
-	in.x = (pt.x - mViewport.getX1()) / mViewport.getWidth() * 2.0f - 1.0f;
-	in.y = (pt.y - mViewport.getY1()) / mViewport.getHeight() * 2.0f - 1.0f;
-	in.z = 2.0f * pt.z - 1.0f;
-	in.w = 1.0f;
-
-	//	find the object's coordinates
-	glm::vec4 out = a * in;
-	if (out.w != 0.0f)
-		out.w = 1.0f / out.w;
-
-	//	calculate output
-	ci::vec3 result;
-	result.x = out.x * out.w;
-	result.y = out.y * out.w;
-	result.z = out.z * out.w;
-
-	return result;
+ci::vec3 MatrixSet::unProject(const ci::vec3 &pt) {
+	return glm::unProject(pt, mModelview, mProjection, mViewport);
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

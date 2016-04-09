@@ -29,8 +29,8 @@
 */
 
 #include "cinder/app/App.h"
-#include "poScene.h"
 #include "poNodeContainer.h"
+#include "poScene.h"
 
 namespace po {
 namespace scene {
@@ -45,7 +45,12 @@ SceneRef Scene::create(NodeContainerRef rootNode) {
 	return scene;
 }
 
-Scene::Scene(NodeContainerRef rootNode) : mRootNode(rootNode), mAutoCam(true), eventCenter(EventCenter::create()), mFbo(nullptr), mMaskFbo(nullptr) {
+Scene::Scene(NodeContainerRef rootNode)
+		: mRootNode(rootNode)
+		, mAutoCam(true)
+		, eventCenter(EventCenter::create())
+		, mFbo(nullptr)
+		, mMaskFbo(nullptr) {
 	createFbos();
 	ci::app::getWindow()->getSignalResize().connect(std::bind(&Scene::createFbos, this));
 }
@@ -72,6 +77,19 @@ void Scene::draw() {
 	if (mAutoCam)
 		ci::gl::setMatricesWindow(ci::app::getWindowSize());
 	mRootNode->drawTree();
+}
+
+NodeRef Scene::getNodeUnderPoint(ci::vec2 point) {
+	std::vector<NodeRef> nodes = allChildren;
+	std::sort(nodes.begin(), nodes.end(), [&nodes](const NodeRef &a, const NodeRef &b) { return a->getDrawOrder() > b->getDrawOrder(); });
+
+	for (NodeRef &node : nodes) {
+		if (node->pointInside(point)) {
+			return node;
+		}
+	}
+
+	return this->getRootNode();
 }
 
 uint32_t Scene::getNextDrawOrder() {
@@ -154,5 +172,6 @@ void Scene::resetFbos() {
 	mFbo.reset();
 	mMaskFbo.reset();
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

@@ -53,55 +53,14 @@ ShapeRef Shape::create(ci::gl::TextureRef texture) {
 //
 //	Rect
 //
-ShapeRef Shape::createRect(float width, float height, float rad) {
-
-	if (rad > 0.f)
-		return createRoundedRect(width, height, rad);
-
+ShapeRef Shape::createRect(float width, float height) {
 	std::shared_ptr<Shape> s = std::shared_ptr<Shape>(new Shape());
+
 	ci::Shape2d shape;
 	shape.moveTo(0, 0);
 	shape.lineTo(width, 0);
 	shape.lineTo(width, height);
 	shape.lineTo(0, height);
-	shape.close();
-
-	s->setCiShape2d(shape);
-	return s;
-}
-
-//
-//	Rounded Rect
-//
-ShapeRef Shape::createRoundedRect(float width, float height, float rad) {
-	std::shared_ptr<Shape> s = std::shared_ptr<Shape>(new Shape());
-
-	// points
-	ci::vec2 p1(rad, 0);
-	ci::vec2 p2(width - rad, 0);
-	ci::vec2 p3(width, rad);
-	ci::vec2 p4(width, height - rad);
-	ci::vec2 p5(width - rad, height);
-	ci::vec2 p6(rad, height);
-	ci::vec2 p7(0, height - rad);
-	ci::vec2 p8(0, rad);
-
-	// tangents
-	ci::vec2 t1(width, 0);
-	ci::vec2 t2(width, height);
-	ci::vec2 t3(0, height);
-	ci::vec2 t4(0, 0);
-
-	ci::Shape2d shape;
-	shape.moveTo(p1);
-	shape.lineTo(p2);
-	shape.arcTo(p3, t1, rad);
-	shape.lineTo(p4);
-	shape.arcTo(p5, t2, rad);
-	shape.lineTo(p6);
-	shape.arcTo(p7, t3, rad);
-	shape.lineTo(p8);
-	shape.arcTo(p1, t4, rad);
 	shape.close();
 
 	s->setCiShape2d(shape);
@@ -143,8 +102,8 @@ ShapeRef Shape::createEllipse(float width, float height) {
 	return s;
 }
 
-ShapeRef Shape::createCircle(float size) {
-	return createEllipse(size, size);
+ShapeRef Shape::createCircle(float diameter) {
+	return createEllipse(diameter, diameter);
 }
 
 Shape::Shape()
@@ -165,8 +124,8 @@ void Shape::setCiShape2d(ci::Shape2d shape) {
 void Shape::draw() {
 	// Draw fill
 	if (getFillEnabled()) {
-		ci::gl::enableAlphaBlending();
-		ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
+		ci::gl::ScopedBlendAlpha scopedBlend;
+		ci::gl::ScopedColor scopedColor(ci::ColorA(getFillColor(), getAppliedAlpha()));
 
 		if (mTexture) {
 			ci::gl::ScopedGlslProg shaderScp(ci::gl::getStockShader(ci::gl::ShaderDef().texture().color()));
@@ -282,5 +241,6 @@ ci::Rectf Shape::getBounds() {
 
 	return mBounds;
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

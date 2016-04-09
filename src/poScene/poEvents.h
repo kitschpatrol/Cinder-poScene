@@ -111,7 +111,18 @@ class MouseEvent : public po::scene::Event {
 
 public:
 	//! Mouse event types
-	enum Type { DOWN, DOWN_INSIDE, MOVE, MOVE_INSIDE, DRAG, DRAG_INSIDE, UP, UP_INSIDE, WHEEL, UNKOWN };
+	enum Type {
+		DOWN,
+		DOWN_INSIDE,
+		MOVE,
+		MOVE_INSIDE,
+		DRAG,
+		DRAG_INSIDE,
+		UP,
+		UP_INSIDE,
+		WHEEL,
+		UNKOWN,
+	};
 
 	MouseEvent(ci::app::MouseEvent event, Type type);
 	ci::app::MouseEvent getCiEvent() {
@@ -140,7 +151,15 @@ class TouchEvent : public Event {
 
 public:
 	//! Touch Event Types
-	enum Type { BEGAN, BEGAN_INSIDE, MOVED, MOVED_INSIDE, ENDED, ENDED_INSIDE, UNKOWN };
+	enum Type {
+		BEGAN,
+		BEGAN_INSIDE,
+		MOVED,
+		MOVED_INSIDE,
+		ENDED,
+		ENDED_INSIDE,
+		UNKOWN,
+	};
 
 	TouchEvent(ci::app::TouchEvent::Touch event, Type type);
 	ci::app::TouchEvent::Touch getCiEvent() {
@@ -162,5 +181,6 @@ private:
 	ci::app::TouchEvent::Touch mCiEvent;
 	Type mType;
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

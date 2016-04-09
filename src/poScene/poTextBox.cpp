@@ -56,9 +56,8 @@ TextBox::TextBox(ci::TextBox ciTextBox)
 
 void TextBox::draw() {
 	if (mTexture) {
-		ci::gl::enableAlphaBlending();
-
-		ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
+		ci::gl::ScopedBlendAlpha scopedBlend;
+		ci::gl::ScopedColor scopedColor(ci::ColorA(getFillColor(), getAppliedAlpha()));
 		ci::gl::draw(mTexture);
 	}
 }
@@ -93,5 +92,6 @@ void TextBox::setFormat(ci::gl::Texture::Format format) {
 	mHasFormat = true;
 	render();
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

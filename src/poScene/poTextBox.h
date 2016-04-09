@@ -31,8 +31,7 @@
 #pragma once
 
 #include "cinder/Text.h"
-#include "cinder/gl/Texture.h"
-#include "cinder/gl/draw.h"
+#include "cinder/gl/gl.h"
 #include "poNode.h"
 
 namespace po {
@@ -62,7 +61,6 @@ public:
 
 	//! Set the ci::TextBox object (by copying) and render to a texture
 	void setCiTextBox(ci::TextBox &ciTextBox);
-
 	//! Get a copy of the backing ci::TextBox for manipulation
 	ci::TextBox getCiTextBoxCopy() {
 		return mCiTextBox;
@@ -82,5 +80,6 @@ private:
 	ci::gl::Texture::Format mFormat;
 	bool mHasFormat;
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

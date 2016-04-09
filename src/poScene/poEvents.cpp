@@ -81,5 +81,6 @@ TouchEvent::TouchEvent(ci::app::TouchEvent::Touch event, Type type)
 		, mType(type) {
 	mWindowPos = event.getPos();
 }
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

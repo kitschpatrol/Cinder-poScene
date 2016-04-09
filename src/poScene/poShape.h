@@ -30,14 +30,14 @@
 
 #pragma once
 
-#include "poNode.h"
-#include "poTextureFit.h"
 #include "cinder/Shape2d.h"
 #include "cinder/gl/Vbo.h"
 #include "cinder/gl/VboMesh.h"
 #include "cinder/gl/draw.h"
-#include "cinder/gl/Shader.h"
 #include "cinder/gl/scoped.h"
+#include "cinder/gl/shader.h"
+#include "poNode.h"
+#include "poTextureFit.h"
 
 namespace po {
 namespace scene {
@@ -62,17 +62,13 @@ public:
 	//! Create a shape with a texture (defaults to a rect shape)
 	static ShapeRef create(ci::gl::TextureRef texture);
 	//! Create a rectangular shape
-	static ShapeRef createRect(float width, float height, float rad = 0.f);
-
-	//! Create a rounded rect
-	static ShapeRef createRoundedRect(float width, float height, float rad);
-
+	static ShapeRef createRect(float width, float height);
 	//! Create an square shape
 	static ShapeRef createSquare(float size);
 	//! Create an elliptical shape
 	static ShapeRef createEllipse(float width, float height);
 	//! Create an circle
-	static ShapeRef createCircle(float size);
+	static ShapeRef createCircle(float diameter);
 
 	~Shape();
 
@@ -143,5 +139,6 @@ private:
 
 	int mPrecision;
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

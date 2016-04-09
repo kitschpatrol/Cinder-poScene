@@ -28,38 +28,67 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "poImage.h"
+#pragma once
+
+#include "cinder/gl/draw.h"
+
+#ifdef CINDER_MSW
+#include "ciWMFVideoPlayer.h"
+#endif
+
+#ifdef CINDER_MAC
+#include "cinder/qtime/QuickTime.h"
+#include "cinder/qtime/QuickTimeGlImplAvf.h"
+
+typedef std::shared_ptr<ci::qtime::MovieGl> ciAvfVideoPlayer;
+#endif
+
+#include "poNode.h"
 
 namespace po {
 namespace scene {
 
-ImageRef Image::create() {
-	return create(nullptr);
-}
+class VideoNative;
+typedef std::shared_ptr<VideoNative> VideoNativeRef;
 
-ImageRef Image::create(ci::gl::TextureRef texture) {
-	ImageRef ref(new Image(texture));
-	return ref;
-}
+class VideoNative : public Node {
+public:
+	static VideoNativeRef create();
+	void setup();
+	void update();
+	void draw();
 
-Image::Image(ci::gl::TextureRef texture)
-		: mTexture(texture) {
-}
+	void load(ci::fs::path path);
+	void play();
+	void pause();
+	void stop();
 
-void Image::draw() {
-	if (mTexture) {
-		ci::gl::ScopedBlendAlpha scopedBlend;
-		ci::gl::ScopedColor scopedColor(ci::ColorA(getFillColor(), getAppliedAlpha()));
-		ci::gl::draw(mTexture);
-	}
-}
+	bool isPlaying();
 
-ci::Rectf Image::getBounds() {
-	if (mTexture) {
-	return mTexture->getBounds();
-	} else {
-		return ci::Rectf::zero();
-	}
-}
-}
-} //  Namespace: po::scene
+	void setPlayheadPosition(float value);
+	void setLoopEnabled(bool enabled);
+	float getDuration();
+
+	//! Get the bounds of the Image
+	ci::Rectf getBounds();
+	~VideoNative();
+
+protected:
+	VideoNative();
+
+private:
+	bool mLoopEnabled;
+#ifdef CINDER_MSW
+	ciWMFVideoPlayer mBackingVideo;
+	bool wasPlaying = false;
+	float lastFrameTime = 0;
+
+#endif
+
+#ifdef CINDER_MAC
+	ciAvfVideoPlayer mBackingVideo;
+#endif
+};
+
+} // namespace scene
+} // namespace po

@@ -30,8 +30,9 @@
 
 #pragma once
 
+#include "cinder/gl/gl.h"
 #include "poNode.h"
-#include "cinder/gl/draw.h"
+
 namespace po {
 namespace scene {
 // Images are simple wrappers that draw a ci::gl::Texture to a
@@ -72,5 +73,6 @@ protected:
 private:
 	ci::gl::TextureRef mTexture;
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

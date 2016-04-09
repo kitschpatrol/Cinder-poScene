@@ -26,19 +26,24 @@
  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 
 #pragma once
 
-#include "boost/signals2.hpp"
 #include "cinder/Cinder.h"
+#include "cinder/CinderMath.h"
+#include "cinder/Exception.h"
+#include "cinder/Signals.h"
+#include "cinder/Timeline.h"
 #include "cinder/gl/Fbo.h"
 #include "cinder/gl/GlslProg.h"
-#include "cinder/CinderMath.h"
-#include "cinder/Timeline.h"
-#include "cinder/Exception.h"
-#include "poMatrixSet.h"
 #include "poEvents.h"
+#include "poMatrixSet.h"
+#include <deque>
+
+#ifdef CINDER_MSW
+#include <deque>
+#endif
 
 namespace po {
 namespace scene {
@@ -90,7 +95,7 @@ public:
 
 	//! Setup function, used to initialize node
 	/**	Use this to do non-initializing construction of your object, add children, add events, etc.
-			Since we're using shared_ptr's the constructor is a bit worthless, we can't call shared_from_this() or get a shared pointer to "this". **/
+	 Since we're using shared_ptr's the constructor is a bit worthless, we can't call shared_from_this() or get a shared pointer to "this". **/
 	virtual void setup(){};
 
 	//! Called automatically once per scene update for every node in the scene
@@ -98,7 +103,7 @@ public:
 	virtual void update(){};
 	//! Called automatically once per scene draw, do any OpenGL here
 	/** All matrix transformations take place before this call, so you are automatically in local space
-			when this function begins **/
+	 when this function begins **/
 	virtual void draw() = 0;
 
 	//------------------------------------
@@ -119,6 +124,9 @@ public:
 	NodeContainerRef getParent() const;
 	//! Check if this node currently has a parent
 	bool hasParent();
+
+	bool hasSiblings();
+	std::deque<NodeRef> getSiblings();
 
 	//	Dimensions
 	//  Dimensions are determined by the getBounds() function
@@ -150,6 +158,10 @@ public:
 		return getHeight() * getScale().y;
 	};
 
+	ci::vec2 getCenter() {
+		return ci::vec2(getWidth() * 0.5, getHeight() * 0.5);
+	}
+
 	//	Bounds & Frame
 	//  The bounds of the node are relative to local space around the top left origin.
 	//  The frame is relative to the position of the node
@@ -159,8 +171,10 @@ public:
 		mDrawBounds = enabled;
 		return *this;
 	};
+
 	//! Return the bounds
 	virtual ci::Rectf getBounds();
+
 	//! Set the color that the bounds should be drawn in
 	Node &setBoundsColor(ci::Color color) {
 		mBoundsColor = color;
@@ -254,6 +268,23 @@ public:
 
 	// Position
 	// The position that the origin is at within the parent node
+
+	float getY() {
+		return mPosition.y;
+	}
+
+	float getX() {
+		return mPosition.x;
+	}
+
+	Node &setY(float y) {
+		return setPosition(mPosition.x, y);
+	};
+
+	Node &setX(float x) {
+		return setPosition(x, mPosition.y);
+	};
+
 	//! Set the position of the node with a ci::vec2
 	Node &setPosition(ci::vec2 position) {
 		return setPosition(position.x, position.y);
@@ -268,6 +299,26 @@ public:
 	// Scale
 	// Scales around the origin of the node
 
+	float getScaleY() {
+		return mScale.y;
+	}
+
+	float getScaleX() {
+		return mScale.x;
+	}
+
+	Node &setScaleY(float y) {
+		return setScale(mScale.x, y);
+	};
+
+	Node &setScaleX(float x) {
+		return setScale(x, mScale.y);
+	};
+
+	Node &setScale(float s) {
+		return setScale(s, s);
+	}
+
 	//! Set the scale with a ci::vec2
 	Node &setScale(ci::vec2 scale) {
 		return setScale(scale.x, scale.y);
@@ -275,6 +326,7 @@ public:
 	//! Set the scale, convenience method
 	Node &setScale(float x, float y);
 	//! Get the scale
+
 	ci::vec2 getScale() {
 		return mScale;
 	};
@@ -283,9 +335,9 @@ public:
 	// Rotates around the origin of the node
 	// Expressed in degrees
 
-	//! Set the rotation (in degrees)
+	//! Set the rotation (in radians)
 	Node &setRotation(float rotation);
-	//! Get the rotation (in degrees)
+	//! Get the rotation (in radians)
 	float getRotation() {
 		return mRotation;
 	};
@@ -315,6 +367,10 @@ public:
 	// The offset of drawing, relative to the origin.
 	// This can be set either by using one of the built in alignments,
 	// or manually by using one of the below methods
+
+	Node &setOffsetNormalized(ci::vec2 offset);
+	Node &setOffsetNormalized(float x, float y);
+	ci::vec2 getOffsetNormalized();
 
 	//! Set the offset using a ci::vec2
 	Node &setOffset(ci::vec2 offset) {
@@ -430,7 +486,8 @@ public:
 	// as a texture.
 
 	//! Create an FBO, draw this node (and it's entire hierarchy if applicable) into it, and return the texture
-	ci::gl::TextureRef createTexture();
+	ci::gl::TextureRef createTexture(bool drawMaskedEnabled = false);
+	ci::gl::TextureRef createTexture(bool drawMaskedEnabled, ci::gl::Fbo::Format fboFormat);
 
 	// Masking
 	// Nodes can be masked to another node
@@ -517,6 +574,11 @@ public:
 		return mTouchEventSignals[type];
 	}
 
+	// Debugger helper. put this on scene instead?
+	ci::signals::Signal<void()> *getSignalSelectionByDebuggerChanged();
+	bool getIsSelectedByDebugger();
+	void setIsSelectedByDebugger(bool selected);
+
 protected:
 	// Constructor
 	Node(std::string name = "");
@@ -547,7 +609,7 @@ protected:
 
 	//	Caching/FBO
 	void captureMasked();
-	void drawMasked();
+	void drawMasked(bool useWindowMatrix = true);
 	po::scene::NodeRef mMask;
 	bool mIsMasked;
 
@@ -630,6 +692,9 @@ private:
 	std::weak_ptr<NodeContainer> mParent;
 	bool mHasParent;
 
+	ci::signals::Signal<void()> mSignalSelectionByDebuggerChanged;
+	bool mIsSelectedByDebugger = false;
+
 	//	Bounds and frame
 	//! Draw the bounds/frame
 	void drawBounds();
@@ -667,5 +732,6 @@ private:
 
 	class NodeException : public ci::Exception {};
 };
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po

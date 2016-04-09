@@ -132,6 +132,8 @@ private:
 				case MouseEvent::Type::UP:
 					callbackType = MouseEvent::Type::UP_INSIDE;
 					break;
+				default:
+					break;
 			}
 
 			// If we didnt' handle it (i.e. wheel event) just return
@@ -189,6 +191,8 @@ private:
 					break;
 				case TouchEvent::Type::ENDED:
 					callbackType = TouchEvent::Type::ENDED_INSIDE;
+					break;
+				default:
 					break;
 			}
 

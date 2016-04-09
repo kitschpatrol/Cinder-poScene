@@ -34,13 +34,13 @@
 #if !defined(CINDER_MSW) && !defined(CINDER_LINUX)
 #include "cinder/qtime/QuickTimeGlImplAvf.h"
 #endif
-#include "cinder/qtime/QuickTimeGl.h"
-#include "cinder/gl/wrapper.h"
-#include "cinder/gl/draw.h"
-#include "poNode.h"
 #include "boost/any.hpp"
 #include "cinder/app/App.h"
 #include "cinder/gl/Texture.h"
+#include "cinder/gl/draw.h"
+#include "cinder/gl/wrapper.h"
+#include "cinder/qtime/QuickTimeGl.h"
+#include "poNode.h"
 
 namespace po {
 namespace scene {
@@ -122,7 +122,7 @@ void Video<T>::draw() {
 	// ci::app::console() << "getTexture -> " << mMovieRef->getTexture() << std::endl;
 
 	if (mMovieRef != nullptr && mMovieRef->getTexture()) {
-		ci::gl::color(ci::ColorA(getFillColor(), getAppliedAlpha()));
+		ci::gl::ScopedCoor scopedColor(ci::ColorA(getFillColor(), getAppliedAlpha()));
 		ci::gl::draw(mMovieRef->getTexture());
 	}
 }
@@ -133,5 +133,6 @@ using VideoRef = std::shared_ptr<Video<T>>;
 
 typedef Video<ci::qtime::MovieGl> VideoGl;
 typedef std::shared_ptr<VideoGl> VideoGlRef;
-}
-} //  namespace po::scene
+
+} // namespace scene
+} // namespace po
