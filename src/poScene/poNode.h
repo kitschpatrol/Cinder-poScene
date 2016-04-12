@@ -205,6 +205,17 @@ public:
 	bool isInteractionEnabled() {
 		return mInteractionEnabled;
 	};
+	
+	// Flag to enable/disable propagation of any event through this node.
+	// If enabled, all events will not pass through this node.
+	// Alternative to implementing a bunch of listeners just to get an "event-opaque" object.
+	void setEventTransparencyEnabled(bool enabled) {
+		mEventTransparencyEnabled = enabled;
+	};
+	bool isEventTransparencyEnabled() {
+		return mEventTransparencyEnabled;
+	};
+	
 
 	//	Hit Testing & Transformation
 	//! Main function for determining hit testings
@@ -601,6 +612,7 @@ protected:
 
 	//	Interaction
 	bool mInteractionEnabled;
+	bool mEventTransparencyEnabled;
 
 	//	Bounds/Frame
 	ci::Rectf mBounds;
