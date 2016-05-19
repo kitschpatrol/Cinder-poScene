@@ -10,7 +10,8 @@
 #include "cinder/Log.h"
 #include "cinder/Utilities.h"
 
-#include "CinderKit.h"
+#include "kit/String.h"
+
 #include "poNodeContainer.h"
 
 #include "ofxRemoteUIServer.h"
@@ -343,19 +344,19 @@ void NodeDebugger::setSelectedNode(po::scene::NodeRef node) {
 void NodeDebugger::logNode(po::scene::NodeRef node) {
 	std::string name = "Node Name: " + node->getName();
 
-	std::string position = "someNode->setPosition(" + kp::kit::toCodeString(node->getPosition()) + ");";
+	std::string position = "someNode->setPosition(" + kit::toCodeString(node->getPosition()) + ");";
 	std::string scale = "someNode->setScale(" + ci::toString(node->getScale().x) + ");";
 	std::string alpha = "someNode->setAlpha(" + ci::toString(node->getAlpha()) + ");";
 	std::string rotation = "someNode->setRotation(" + ci::toString(node->getRotation()) + ");";
-	std::string bounds = "Bounds: " + kp::kit::toCodeString(node->getBounds());
+	std::string bounds = "Bounds: " + kit::toCodeString(node->getBounds());
 
 	std::string rectInParent = "Rect in parent: ";
 	if (node->hasParent()) {
 		ci::vec2 ul = node->localToNode(node->getBounds().getUpperLeft(), node->getParent());
 		ci::vec2 lr = node->localToNode(node->getBounds().getLowerRight(), node->getParent());
 
-		rectInParent += kp::kit::toCodeString(ci::Rectf(ul, lr));
-		;
+		rectInParent += kit::toCodeString(ci::Rectf(ul, lr));
+
 	} else {
 		rectInParent += "No Parent.";
 	}
@@ -364,8 +365,7 @@ void NodeDebugger::logNode(po::scene::NodeRef node) {
 
 	ci::Clipboard::setString(info);
 	std::cout << info << std::endl;
-
-	std::cout << kp::kit::toCodeString(node->getPosition()) << ", " << kp::kit::toCodeString(node->getScale()) << ", " << node->getRotation() << ")," << std::endl;
+	std::cout << kit::toCodeString(node->getPosition()) << ", " << kit::toCodeString(node->getScale()) << ", " << node->getRotation() << ")," << std::endl;
 }
 
 NodeDebugger::NodeDebugger() {

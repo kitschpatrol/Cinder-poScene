@@ -1,6 +1,7 @@
 #include "poVideoNative.h"
 
 #include "cinder/Log.h"
+#include "cinder/gl/scoped.h" 
 // TODO split this into two implementations...
 // OR just wrap WMF like MovieBase
 

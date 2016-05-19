@@ -1,5 +1,7 @@
 #include "poNano.h"
 
+#include "cinder/gl/scoped.h" 
+
 namespace po {
 namespace scene {
 
